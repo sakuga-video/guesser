@@ -21,19 +21,27 @@ const VideoPlayer = ({ tags, clear_tags }: { tags: Tag[], clear_tags: () => void
     }, [tags, index]);
 
     useEffect(() => {
+        const play_next = () => {
+            if ((index + 1) < tags.length) {
+                set_index(index + 1);
+            } else {
+                clear_tags();
+            }
+        }
+
+        const on_keyup = (event: KeyboardEvent) => {
+            if (event.key === "ArrowRight") {
+                play_next();
+            }
+        };
+
         if (window){
             window.addEventListener("keyup", on_keyup);
         }
         return () => {
           window.removeEventListener("keyup", on_keyup);
         }
-    }, [index]);
-
-    const on_keyup = (event: KeyboardEvent) => {
-        if (event.key === "ArrowRight") {
-            play_next();
-        }
-    };
+    }, [index, tags, clear_tags]);
 
     const play_next = () => {
         if ((index + 1) < tags.length) {
