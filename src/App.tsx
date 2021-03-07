@@ -5,6 +5,7 @@ import Guess from './Guess';
 import VideoPlayer from './VideoPlayer';
 import Button from '@material-ui/core/Button';
 import { Map } from 'immutable';
+import GuessResultUI, { GuessResult } from './GuessResultUI';
 
 enum TagType {
   GENERAL = 0,
@@ -37,12 +38,17 @@ function App() {
   const [current_video, set_current_video] = useState<Video | undefined>(undefined);
   const [score, set_score] = useState<number>(0);
   const [index, set_index] = useState<number>(0);
+  const [guess_result, set_guess_result] = useState<GuessResult | undefined>(undefined);
 
   useEffect(() => {
     fetch_tags().then(tags =>
       set_all_tags(tags.filter(tag => tag.type === TagType.COPYRIGHT))
     );
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => set_guess_result(undefined), 5_500);
+  }, [guess_result])
 
   const play_next = () => {
     if ((index + 1) < selected_tags.length) {
@@ -65,9 +71,19 @@ function App() {
     set_selected_tags([]);
   }
 
+  const show_guess_result = (video: Video, guess:string) => {
+    set_guess_result({
+      guess,
+      correct_answer: video.tag.name,
+      is_correct: guess_matches(guess, video),
+    })
+  }
+  
+
   const add_guess = (guess: string) => {
     if (current_video !== undefined) {
       const new_guesses = guesses.set(current_video, guess);
+      show_guess_result(current_video, guess);
       set_guesses(new_guesses);
       recalculate_score(new_guesses);
       play_next();
@@ -96,10 +112,8 @@ function App() {
         index={index}
         set_index={set_index}
         play_next={play_next} />}
-      <Guess on_guess_submitted={add_guess} all_tags={all_tags} />
-      <ol>
-        {guesses.toArray().map(([video, guess]) => <li key={video.id}>{video.tag.name}: {guess}</li>)}
-      </ol>
+      <GuessResultUI guess_result={guess_result} />
+      {playing && <Guess on_guess_submitted={add_guess} all_tags={all_tags} />}
     </React.Fragment>
   );
 }

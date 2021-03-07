@@ -31,10 +31,16 @@ body, html, video, #videocontainer {
 }
 
 video {
-  width:100%;
-  position: absolute;
-  top: 0;
-  right: 0;
+  position: fixed;
+  object-fit: contain;
+}
+video::-webkit-media-controls {
+  display:none !important;
+}
+
+#start {
+  z-index: 2147483647;
+  position: fixed;
 }
 
 .controls {

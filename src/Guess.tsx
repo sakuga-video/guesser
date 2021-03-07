@@ -9,17 +9,10 @@ type Props = {
 }
 
 const Guess = ({all_tags, on_guess_submitted }: Props) => {
-  const [guess, set_guess] = useState<string>("");
-
-  const submit_guess = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    on_guess_submitted(guess);
-  }
-
-  const on_guess_change = (event: ChangeEvent<{}>, value: Tag | null) => set_guess(value?.name ?? "");
+  const on_guess_change = (event: ChangeEvent<{}>, value: Tag | null) => on_guess_submitted(value?.name ?? "");
   
   return (
-    <form id="guess" onSubmit={submit_guess} className="controls">
+    <div id="guess" className="controls">
       <Autocomplete
         options={all_tags}
         style={{ width: 300 }}
@@ -27,8 +20,7 @@ const Guess = ({all_tags, on_guess_submitted }: Props) => {
         onChange={on_guess_change}
         renderInput={(params) => <TextField {...params} label="Guess the title" />}
       />
-      <Button type="submit" color="primary">Guess</Button>
-    </form>
+    </div>
   );
 };
 
