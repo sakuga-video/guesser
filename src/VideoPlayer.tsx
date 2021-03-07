@@ -12,12 +12,31 @@ const VideoPlayer = ({ tags }: { tags: Tag[] }) => {
         }
     }, [tags, index]);
 
+    useEffect(() => {
+        if (window){
+            window.addEventListener("keyup", on_keyup);
+        }
+        return () => {
+          window.removeEventListener("keyup", on_keyup);
+        }
+    }, [index]);
+
+    const on_keyup = (event: KeyboardEvent) => {
+        if (event.key === "ArrowRight") {
+            console.log("NEXT ====>")
+            play_next();
+        }
+    };
+
     const play_next = () => {
-        set_index((index + 1) % tags.length);
+        if ((index + 1) < tags.length) {
+            set_index(index + 1);
+        }
     }
 
     return (
         <React.Fragment>
+            <h1>{index + 1}/{tags.length}</h1>
             <video muted preload="auto" autoPlay src={video?.file_url} onEnded={play_next} />
             <p>{tags[index].name.replaceAll("_", " ")}</p>
             <p>{tags[index].count}</p>
@@ -29,7 +48,7 @@ async function fetch_random_video({ tag, index = undefined }: { tag: Tag, index?
     const random_number = random(tag.count);
     const url = '/api/post.json?limit=1&page=' + (index ?? random_number) + '&tags=' + tag.name;
     const response = await fetch(url);
-    const videos = await response.json();
+    const videos: Video[] = await response.json();
     const video = videos[0];
 
     if (videoIsValid(video)) {
@@ -48,5 +67,9 @@ function videoIsValid(video: any) {
         && (video.file_ext === "mp4" || video.file_ext === "webm")
         && video.id;
 }
+
+type Video = {
+    file_url: string,
+};
 
 export default VideoPlayer;
