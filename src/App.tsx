@@ -11,10 +11,6 @@ import { random } from 'lodash';
 function App() {
   const [tags, set_tags] = useState<Tag[]>([]);
   const [random_tags, set_random_tags] = useState<Tag[]>([]);
-  const [videos, set_videos] = useState<Video[]>([]);
-  const [currentVideo, set_current_video] = useState<Video | undefined>(undefined);
-  const [guess, set_guess] = useState<string>("");
-  const [score, set_score] = useState<number>(0);
   const [playing, set_playing] = useState<boolean>(false);
 
   useEffect(() => {
@@ -30,7 +26,6 @@ function App() {
 
   return (
     <div id="videocontainer" className="fade-out">
-      <Score score={score} />
       {!playing && <Button variant="contained" disabled={tags.length === 0} onClick={start}>Start</Button>}
       {playing && <VideoPlayer tags={random_tags} />}
       <Guess />
@@ -70,12 +65,6 @@ const popularity_list: Popularity[] = [
   {"max": 25, "min": 10},
   {"max": 1, "min": 1},
 ];
-
-type Video = {
-  url: string,
-  name: string,
-  popularity: number,
-};
 
 export type Tag = {
   ambiguous: boolean,
