@@ -6,6 +6,7 @@ import VideoPlayer from './VideoPlayer';
 import Button from '@material-ui/core/Button';
 import { Map } from 'immutable';
 import GuessResultUI, { GuessResult } from './GuessResultUI';
+import Score from './Score';
 
 enum TagType {
   GENERAL = 0,
@@ -34,6 +35,7 @@ function App() {
   const [all_tags, set_all_tags] = useState<Tag[]>([]);
   const [selected_tags, set_selected_tags] = useState<Tag[]>([]);
   const [playing, set_playing] = useState<boolean>(false);
+  const [has_played, set_has_played] = useState<boolean>(false);
   const [guesses, set_guesses] = useState<Map<Video, string>>(Map());
   const [current_video, set_current_video] = useState<Video | undefined>(undefined);
   const [score, set_score] = useState<number>(0);
@@ -47,7 +49,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const timeout = setTimeout(() => set_guess_result(undefined), 5_500);
+    const timeout = setTimeout(() => set_guess_result(undefined), 2_500);
   }, [guess_result])
 
   const play_next = () => {
@@ -61,6 +63,7 @@ function App() {
   const start = () => {
     set_selected_tags(choose_random_tags(all_tags));
     set_playing(true);
+    set_has_played(true);
     set_guesses(Map());
     set_score(0);
     set_index(0);
@@ -102,7 +105,7 @@ function App() {
 
   return (
     <React.Fragment>
-      <p id="score" className="controls">Score: {score}</p>
+      {has_played && <Score score={score} max_score={index} />}
       {!playing && !guess_result && <Button variant="contained" disabled={all_tags.length === 0} onClick={start} id="start">Start</Button>}
       {playing && !guess_result && <VideoPlayer
         tags={selected_tags}
