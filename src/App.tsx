@@ -32,7 +32,7 @@ function App() {
     <div id="videocontainer" className="fade-out">
       <Score score={score} />
       {!playing && <Button variant="contained" disabled={tags.length === 0} onClick={start}>Start</Button>}
-      {playing && <VideoPlayer random_tags={random_tags} />}
+      {playing && <VideoPlayer tags={random_tags} />}
       <Guess />
     </div>
   );

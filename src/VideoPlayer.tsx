@@ -2,14 +2,27 @@ import { random } from "lodash";
 import React, { useEffect, useState } from "react";
 import { Tag } from "./App";
 
-const VideoPlayer = ({ random_tags }: { random_tags: Tag[] }) => {
+const VideoPlayer = ({ tags }: { tags: Tag[] }) => {
+    const [index, set_index] = useState<number>(0);
     const [video, set_video] = useState<any>(undefined);
+
     useEffect(() => {
-        if (random_tags.length > 0) {
-            fetch_random_video({ tag: random_tags[0] }).then(set_video);
+        if (tags.length > 0) {
+            fetch_random_video({ tag: tags[index] }).then(set_video);
         }
-    }, [random_tags]);
-    return <video muted preload="auto" autoPlay loop src={video?.file_url} />
+    }, [tags, index]);
+
+    const play_next = () => {
+        set_index((index + 1) % tags.length);
+    }
+
+    return (
+        <React.Fragment>
+            <video muted preload="auto" autoPlay src={video?.file_url} onEnded={play_next} />
+            <p>{tags[index].name.replaceAll("_", " ")}</p>
+            <p>{tags[index].count}</p>
+        </React.Fragment>
+    )
 }
 
 async function fetch_random_video({ tag, index = undefined }: { tag: Tag, index?: number }): Promise<any> {
