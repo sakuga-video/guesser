@@ -1,5 +1,58 @@
-body {
-  background: #000;
-  color: #eee;
-  padding: 1em;
+body, html, video, #videocontainer {
+  margin:0;
+  padding:0;
+  background:#000;
+  height: 100%;
+  width: 100%;
+  overflow-y: hidden;
+  font: 15px 'Open Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#title {
+  background: rgba(2, 2, 2, .7);
+  color: rgba(255, 255, 255, 0.9);
+  position:fixed;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  margin:0;
+  padding:14px;
+  font-size: 40px;
+  z-index: 2147483647;
+}
+
+#root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height:100%;
+}
+
+video {
+  width:100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.controls {
+  z-index: 2147483647;
+  padding: 14px;
+  margin: 0;
+  position: fixed;
+  background: rgba(2, 2, 2, .7);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+#score {
+  left:0;
+  top:0;
+}
+
+#guess {
+  bottom: 0%;
+  left: 50%;
+  transform: translateX(-50%);
 }

@@ -19,7 +19,7 @@ const Guess = ({all_tags, on_guess_submitted }: Props) => {
   const on_guess_change = (event: ChangeEvent<{}>, value: Tag | null) => set_guess(value?.name ?? "");
   
   return (
-    <form id="guess" className="controls" onSubmit={submit_guess}>
+    <form id="guess" onSubmit={submit_guess} className="controls">
       <Autocomplete
         options={all_tags}
         style={{ width: 300 }}

@@ -86,8 +86,8 @@ function App() {
 
   return (
     <React.Fragment>
-      <p id="score">Score: {score}</p>
-      {!playing && <Button variant="contained" disabled={all_tags.length === 0} onClick={start}>Start</Button>}
+      <p id="score" className="controls">Score: {score}</p>
+      {!playing && <Button variant="contained" disabled={all_tags.length === 0} onClick={start} id="start">Start</Button>}
       {playing && <VideoPlayer
         tags={selected_tags}
         on_end={reset}
