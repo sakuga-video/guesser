@@ -1,24 +1,30 @@
 import { random } from "lodash";
 import React, { useEffect, useState } from "react";
-import { Tag } from "./App";
+import { Tag, Video } from "./App";
 
-const VideoPlayer = ({ tags, clear_tags }: { tags: Tag[], clear_tags: () => void }) => {
+type Props = {
+    tags: Tag[],
+    clear_tags: () => void,
+    current_video: Video | undefined,
+    set_current_video: (video: Video) => void,
+};
+
+const VideoPlayer = ({ tags, clear_tags, current_video, set_current_video }: Props) => {
     const [index, set_index] = useState<number>(0);
-    const [video, set_video] = useState<any>(undefined);
 
     useEffect(() => {
         let mounted = true;
         if (tags.length > 0) {
             fetch_random_video({ tag: tags[index] }).then(video => {
                 if (mounted) {
-                    set_video(video)
+                    set_current_video(video)
                 }
             });
         }
         return () => {
             mounted = false;
         };
-    }, [tags, index]);
+    }, [tags, index, set_current_video]);
 
     useEffect(() => {
         const play_next = () => {
@@ -54,7 +60,7 @@ const VideoPlayer = ({ tags, clear_tags }: { tags: Tag[], clear_tags: () => void
     return (
         <React.Fragment>
             <h1>{index + 1}/{tags.length}</h1>
-            <video muted preload="auto" autoPlay src={video?.file_url} onEnded={play_next} />
+            <video muted preload="auto" autoPlay src={current_video?.file_url} onEnded={play_next} />
             <p>{tags[index].name.replaceAll("_", " ")}</p>
             <p>{tags[index].count}</p>
         </React.Fragment>
@@ -84,9 +90,5 @@ function videoIsValid(video: any) {
         && (video.file_ext === "mp4" || video.file_ext === "webm")
         && video.id;
 }
-
-type Video = {
-    file_url: string,
-};
 
 export default VideoPlayer;
