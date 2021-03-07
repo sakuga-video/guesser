@@ -26,21 +26,24 @@ function App() {
   const start = () => {
     set_selected_tags(choose_random_tags(all_tags));
     set_playing(true);
+    set_guesses(Map());
+    set_score(0);
   }
 
-  const clear_tags = () => {
+  const reset = () => {
     set_playing(false);
     set_selected_tags([]);
   }
 
   const add_guess = (guess: string) => {
     if (current_video !== undefined) {
-      set_guesses(guesses.set(current_video, guess));
-      recalculate_score();
+      const new_guesses = guesses.set(current_video, guess);
+      set_guesses(new_guesses);
+      recalculate_score(new_guesses);
     }
   }
 
-  const recalculate_score = () => {
+  const recalculate_score = (guesses: Map<Video, string>) => {
     let total = 0;
     guesses.forEach((guess, video) => {
       if (guess_matches(guess, video)) {
@@ -54,7 +57,7 @@ function App() {
     <React.Fragment>
       <p id="score">Score: {score}</p>
       {!playing && <Button variant="contained" disabled={all_tags.length === 0} onClick={start}>Start</Button>}
-      {playing && <VideoPlayer tags={selected_tags} clear_tags={clear_tags} current_video={current_video} set_current_video={set_current_video} />}
+      {playing && <VideoPlayer tags={selected_tags} on_end={reset} current_video={current_video} set_current_video={set_current_video} />}
       <Guess on_guess_submitted={add_guess} />
       <ol>
         {guesses.toArray().map(([video, guess]) => <li key={video.id}>{video.tag.name}: {guess}</li>)}

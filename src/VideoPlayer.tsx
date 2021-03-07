@@ -4,12 +4,12 @@ import { Tag, Video } from "./App";
 
 type Props = {
     tags: Tag[],
-    clear_tags: () => void,
+    on_end: () => void,
     current_video: Video | undefined,
     set_current_video: (video: Video) => void,
 };
 
-const VideoPlayer = ({ tags, clear_tags, current_video, set_current_video }: Props) => {
+const VideoPlayer = ({ tags, on_end, current_video, set_current_video }: Props) => {
     const [index, set_index] = useState<number>(0);
 
     useEffect(() => {
@@ -31,7 +31,7 @@ const VideoPlayer = ({ tags, clear_tags, current_video, set_current_video }: Pro
             if ((index + 1) < tags.length) {
                 set_index(index + 1);
             } else {
-                clear_tags();
+                on_end();
             }
         }
 
@@ -47,13 +47,13 @@ const VideoPlayer = ({ tags, clear_tags, current_video, set_current_video }: Pro
         return () => {
           window.removeEventListener("keyup", on_keyup);
         }
-    }, [index, tags, clear_tags]);
+    }, [index, tags, on_end]);
 
     const play_next = () => {
         if ((index + 1) < tags.length) {
             set_index(index + 1);
         } else {
-            clear_tags();
+            on_end();
         }
     }
 
