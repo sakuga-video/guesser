@@ -103,8 +103,8 @@ function App() {
   return (
     <React.Fragment>
       <p id="score" className="controls">Score: {score}</p>
-      {!playing && <Button variant="contained" disabled={all_tags.length === 0} onClick={start} id="start">Start</Button>}
-      {playing && <VideoPlayer
+      {!playing && !guess_result && <Button variant="contained" disabled={all_tags.length === 0} onClick={start} id="start">Start</Button>}
+      {playing && !guess_result && <VideoPlayer
         tags={selected_tags}
         on_end={reset}
         current_video={current_video}
@@ -113,7 +113,7 @@ function App() {
         set_index={set_index}
         play_next={play_next} />}
       <GuessResultUI guess_result={guess_result} />
-      {playing && <Guess on_guess_submitted={add_guess} all_tags={all_tags} />}
+      {playing && !guess_result && <Guess on_guess_submitted={add_guess} all_tags={all_tags} />}
     </React.Fragment>
   );
 }

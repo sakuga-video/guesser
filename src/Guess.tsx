@@ -14,6 +14,8 @@ const Guess = ({all_tags, on_guess_submitted }: Props) => {
   return (
     <div id="guess" className="controls">
       <Autocomplete
+        blurOnSelect
+        disableClearable
         options={all_tags}
         style={{ width: 300 }}
         getOptionLabel={(tag: Tag) => tag.name.replaceAll("_", " ")}
