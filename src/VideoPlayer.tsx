@@ -60,22 +60,25 @@ const VideoPlayer = ({ tags, clear_tags, current_video, set_current_video }: Pro
     return (
         <React.Fragment>
             <h1>{index + 1}/{tags.length}</h1>
-            <video muted preload="auto" autoPlay src={current_video?.file_url} onEnded={play_next} />
+            <video muted preload="auto" autoPlay src={current_video?.url} onEnded={play_next} />
             <p>{tags[index].name.replaceAll("_", " ")}</p>
             <p>{tags[index].count}</p>
         </React.Fragment>
     )
 }
 
-async function fetch_random_video({ tag, index = undefined }: { tag: Tag, index?: number }): Promise<any> {
+async function fetch_random_video({ tag, index = undefined }: { tag: Tag, index?: number }): Promise<Video> {
     const random_number = random(tag.count);
     const url = '/api/post.json?limit=1&page=' + (index ?? random_number) + '&tags=' + tag.name;
     const response = await fetch(url);
-    const videos: Video[] = await response.json();
-    const video = videos[0];
+    const videos: VideoResponse[] = await response.json();
 
-    if (videoIsValid(video)) {
-        return video;
+    if (videoIsValid(videos[0])) {
+        return {
+            url: videos[0].file_url,
+            id: videos[0].id,
+            tag: tag,
+        };
     } else {
         return fetch_random_video({
             tag,
@@ -90,5 +93,10 @@ function videoIsValid(video: any) {
         && (video.file_ext === "mp4" || video.file_ext === "webm")
         && video.id;
 }
+
+type VideoResponse = {
+    file_url: string,
+    id: number,
+};
 
 export default VideoPlayer;

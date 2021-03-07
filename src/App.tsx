@@ -15,6 +15,7 @@ function App() {
   const [playing, set_playing] = useState<boolean>(false);
   const [guesses, set_guesses] = useState<Map<Video, string>>(Map());
   const [current_video, set_current_video] = useState<Video | undefined>(undefined);
+  const [score, set_score] = useState<number>(0);
 
   useEffect(() => {
     fetch_tags().then(tags =>
@@ -35,19 +36,35 @@ function App() {
   const add_guess = (guess: string) => {
     if (current_video !== undefined) {
       set_guesses(guesses.set(current_video, guess));
+      recalculate_score();
     }
   }
 
+  const recalculate_score = () => {
+    let total = 0;
+    guesses.forEach((guess, video) => {
+      if (guess_matches(guess, video)) {
+        total += 1;
+      }
+    })
+    set_score(total);
+  }
+
   return (
-    <div id="videocontainer" className="fade-out">
+    <React.Fragment>
+      <p id="score">Score: {score}</p>
       {!playing && <Button variant="contained" disabled={all_tags.length === 0} onClick={start}>Start</Button>}
       {playing && <VideoPlayer tags={selected_tags} clear_tags={clear_tags} current_video={current_video} set_current_video={set_current_video} />}
       <Guess on_guess_submitted={add_guess} />
       <ol>
-        {guesses.toArray().map(([video, guess]) => <li key={video.id}>{video.file_url}: {guess}</li>)}
+        {guesses.toArray().map(([video, guess]) => <li key={video.id}>{video.tag.name}: {guess}</li>)}
       </ol>
-    </div>
+    </React.Fragment>
   );
+}
+
+function guess_matches(guess: string, video: Video) {
+  return guess === video.tag.name.replaceAll("_", " ");
 }
 
 async function fetch_tags() {
@@ -93,8 +110,9 @@ export type Tag = {
 
 
 export type Video = {
-  file_url: string,
+  url: string,
   id: number,
+  tag: Tag,
 };
 
 
