@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { setEmitFlags } from 'typescript';
 import sample from 'lodash/sample';
 import './App.css';
 import Guess from './Guess';
-import Score from './Score';
 import VideoPlayer from './VideoPlayer';
 import Button from '@material-ui/core/Button';
-import { random } from 'lodash';
 import { Map } from 'immutable';
 
 function App() {
