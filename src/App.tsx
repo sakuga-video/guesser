@@ -15,6 +15,7 @@ function App() {
   const [currentVideo, set_current_video] = useState<Video | undefined>(undefined);
   const [guess, set_guess] = useState<string>("");
   const [score, set_score] = useState<number>(0);
+  const [playing, set_playing] = useState<boolean>(false);
 
   useEffect(() => {
     fetch_tags().then(tags =>
@@ -24,19 +25,14 @@ function App() {
 
   const start = () => {
     set_random_tags(choose_random_tags(tags));
+    set_playing(true);
   }
 
   return (
     <div id="videocontainer" className="fade-out">
       <Score score={score} />
-      <Button variant="contained" disabled={tags.length === 0} onClick={start}>Start</Button>
-      {
-        random_tags.length !== 0 &&
-        <ul>
-          {random_tags.map(tag => <li>{tag.name.replaceAll("_", " ")} {tag.count}</li>)}
-        </ul>
-      }
-      <VideoPlayer />
+      {!playing && <Button variant="contained" disabled={tags.length === 0} onClick={start}>Start</Button>}
+      {playing && <VideoPlayer random_tags={random_tags} />}
       <Guess />
     </div>
   );
@@ -58,12 +54,19 @@ const popularity_list: Popularity[] = [
   {"max": 100000, "min": 500},
   {"max": 100000, "min": 500},
   {"max": 100000, "min": 500},
-  {"max": 500, "min": 400},
-  {"max": 400, "min": 300},
-  {"max": 300, "min": 200},
-  {"max": 200, "min": 100},
-  {"max": 100, "min": 50},
-  {"max": 50, "min": 25},
+  {"max": 500, "min": 100},
+  {"max": 500, "min": 100},
+  {"max": 500, "min": 100},
+  {"max": 500, "min": 100},
+  {"max": 500, "min": 100},
+  {"max": 500, "min": 100},
+  {"max": 100, "min": 25},
+  {"max": 100, "min": 25},
+  {"max": 100, "min": 25},
+  {"max": 100, "min": 25},
+  {"max": 25, "min": 10},
+  {"max": 25, "min": 10},
+  {"max": 25, "min": 10},
   {"max": 25, "min": 10},
   {"max": 1, "min": 1},
 ];
@@ -74,7 +77,7 @@ type Video = {
   popularity: number,
 };
 
-type Tag = {
+export type Tag = {
   ambiguous: boolean,
   count: number,
   id: number,
