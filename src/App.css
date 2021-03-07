@@ -1,4 +1,4 @@
-body, html, video, #videocontainer {
+body, html, #root {
   margin:0;
   padding:0;
   background:#000;
@@ -19,7 +19,6 @@ body, html, video, #videocontainer {
   transform: translateX(-50%);
   margin:0;
   padding:14px;
-  font-size: 40px;
   z-index: 2147483647;
 }
 
@@ -33,7 +32,14 @@ body, html, video, #videocontainer {
 video {
   position: fixed;
   object-fit: contain;
+  width: 100%;
+  top:0;
 }
+
+#incorrect-guess {
+  text-decoration: line-through;
+}
+
 video::-webkit-media-controls {
   display:none !important;
 }

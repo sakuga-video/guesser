@@ -45,7 +45,6 @@ const VideoPlayer = ({ tags, on_end, current_video, set_current_video, index, se
 
     return (
         <React.Fragment>
-            <h1 id="title">{index + 1}/{tags.length}</h1>
             <video muted preload="auto" autoPlay src={current_video?.url} onEnded={play_next} />
         </React.Fragment>
     )
