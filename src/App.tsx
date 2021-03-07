@@ -9,25 +9,30 @@ import Button from '@material-ui/core/Button';
 import { random } from 'lodash';
 
 function App() {
-  const [tags, set_tags] = useState<Tag[]>([]);
-  const [random_tags, set_random_tags] = useState<Tag[]>([]);
+  const [all_tags, set_all_tags] = useState<Tag[]>([]);
+  const [selected_tags, set_selected_tags] = useState<Tag[]>([]);
   const [playing, set_playing] = useState<boolean>(false);
 
   useEffect(() => {
     fetch_tags().then(tags =>
-      set_tags(tags.filter(tag => tag.type === TagType.COPYRIGHT))
+      set_all_tags(tags.filter(tag => tag.type === TagType.COPYRIGHT))
     );
   }, [])
 
   const start = () => {
-    set_random_tags(choose_random_tags(tags));
+    set_selected_tags(choose_random_tags(all_tags));
     set_playing(true);
+  }
+
+  const clear_tags = () => {
+    set_playing(false);
+    set_selected_tags([]);
   }
 
   return (
     <div id="videocontainer" className="fade-out">
-      {!playing && <Button variant="contained" disabled={tags.length === 0} onClick={start}>Start</Button>}
-      {playing && <VideoPlayer tags={random_tags} />}
+      {!playing && <Button variant="contained" disabled={all_tags.length === 0} onClick={start}>Start</Button>}
+      {playing && <VideoPlayer tags={selected_tags} clear_tags={clear_tags} />}
       <Guess />
     </div>
   );

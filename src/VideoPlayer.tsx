@@ -2,14 +2,22 @@ import { random } from "lodash";
 import React, { useEffect, useState } from "react";
 import { Tag } from "./App";
 
-const VideoPlayer = ({ tags }: { tags: Tag[] }) => {
+const VideoPlayer = ({ tags, clear_tags }: { tags: Tag[], clear_tags: () => void }) => {
     const [index, set_index] = useState<number>(0);
     const [video, set_video] = useState<any>(undefined);
 
     useEffect(() => {
+        let mounted = true;
         if (tags.length > 0) {
-            fetch_random_video({ tag: tags[index] }).then(set_video);
+            fetch_random_video({ tag: tags[index] }).then(video => {
+                if (mounted) {
+                    set_video(video)
+                }
+            });
         }
+        return () => {
+            mounted = false;
+        };
     }, [tags, index]);
 
     useEffect(() => {
@@ -23,7 +31,6 @@ const VideoPlayer = ({ tags }: { tags: Tag[] }) => {
 
     const on_keyup = (event: KeyboardEvent) => {
         if (event.key === "ArrowRight") {
-            console.log("NEXT ====>")
             play_next();
         }
     };
@@ -31,6 +38,8 @@ const VideoPlayer = ({ tags }: { tags: Tag[] }) => {
     const play_next = () => {
         if ((index + 1) < tags.length) {
             set_index(index + 1);
+        } else {
+            clear_tags();
         }
     }
 
