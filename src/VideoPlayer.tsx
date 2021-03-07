@@ -1,5 +1,5 @@
 import { random } from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Tag, Video } from "./App";
 
 type Props = {
@@ -7,10 +7,12 @@ type Props = {
     on_end: () => void,
     current_video: Video | undefined,
     set_current_video: (video: Video) => void,
+    index: number,
+    set_index: (index: number) => void,
+    play_next: () => void,
 };
 
-const VideoPlayer = ({ tags, on_end, current_video, set_current_video }: Props) => {
-    const [index, set_index] = useState<number>(0);
+const VideoPlayer = ({ tags, on_end, current_video, set_current_video, index, set_index, play_next }: Props) => {
 
     useEffect(() => {
         let mounted = true;
@@ -27,14 +29,6 @@ const VideoPlayer = ({ tags, on_end, current_video, set_current_video }: Props) 
     }, [tags, index, set_current_video]);
 
     useEffect(() => {
-        const play_next = () => {
-            if ((index + 1) < tags.length) {
-                set_index(index + 1);
-            } else {
-                on_end();
-            }
-        }
-
         const on_keyup = (event: KeyboardEvent) => {
             if (event.key === "ArrowRight") {
                 play_next();
@@ -47,15 +41,7 @@ const VideoPlayer = ({ tags, on_end, current_video, set_current_video }: Props) 
         return () => {
           window.removeEventListener("keyup", on_keyup);
         }
-    }, [index, tags, on_end]);
-
-    const play_next = () => {
-        if ((index + 1) < tags.length) {
-            set_index(index + 1);
-        } else {
-            on_end();
-        }
-    }
+    }, [index, tags, on_end, set_index, play_next]);
 
     return (
         <React.Fragment>

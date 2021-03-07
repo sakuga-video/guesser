@@ -6,6 +6,29 @@ import VideoPlayer from './VideoPlayer';
 import Button from '@material-ui/core/Button';
 import { Map } from 'immutable';
 
+enum TagType {
+  GENERAL = 0,
+  ARTIST = 1,
+  COPYRIGHT = 3,
+  CHARACTER = 4,
+}
+
+export type Tag = {
+  ambiguous: boolean,
+  count: number,
+  id: number,
+  name: string,
+  type: TagType,
+};
+
+export type Video = {
+  url: string,
+  id: number,
+  tag: Tag,
+};
+
+type Popularity = { "max": number, "min": number };
+
 function App() {
   const [all_tags, set_all_tags] = useState<Tag[]>([]);
   const [selected_tags, set_selected_tags] = useState<Tag[]>([]);
@@ -13,6 +36,7 @@ function App() {
   const [guesses, set_guesses] = useState<Map<Video, string>>(Map());
   const [current_video, set_current_video] = useState<Video | undefined>(undefined);
   const [score, set_score] = useState<number>(0);
+  const [index, set_index] = useState<number>(0);
 
   useEffect(() => {
     fetch_tags().then(tags =>
@@ -20,11 +44,20 @@ function App() {
     );
   }, [])
 
+  const play_next = () => {
+    if ((index + 1) < selected_tags.length) {
+        set_index(index + 1);
+    } else {
+        reset();
+    }
+  }
+  
   const start = () => {
     set_selected_tags(choose_random_tags(all_tags));
     set_playing(true);
     set_guesses(Map());
     set_score(0);
+    set_index(0);
   }
 
   const reset = () => {
@@ -37,6 +70,7 @@ function App() {
       const new_guesses = guesses.set(current_video, guess);
       set_guesses(new_guesses);
       recalculate_score(new_guesses);
+      play_next();
     }
   }
 
@@ -54,7 +88,14 @@ function App() {
     <React.Fragment>
       <p id="score">Score: {score}</p>
       {!playing && <Button variant="contained" disabled={all_tags.length === 0} onClick={start}>Start</Button>}
-      {playing && <VideoPlayer tags={selected_tags} on_end={reset} current_video={current_video} set_current_video={set_current_video} />}
+      {playing && <VideoPlayer
+        tags={selected_tags}
+        on_end={reset}
+        current_video={current_video}
+        set_current_video={set_current_video}
+        index={index}
+        set_index={set_index}
+        play_next={play_next} />}
       <Guess on_guess_submitted={add_guess} all_tags={all_tags} />
       <ol>
         {guesses.toArray().map(([video, guess]) => <li key={video.id}>{video.tag.name}: {guess}</li>)}
@@ -99,30 +140,5 @@ const popularity_list: Popularity[] = [
   { "max": 25, "min": 10 },
   { "max": 1, "min": 1 },
 ];
-
-export type Tag = {
-  ambiguous: boolean,
-  count: number,
-  id: number,
-  name: string,
-  type: TagType,
-};
-
-
-export type Video = {
-  url: string,
-  id: number,
-  tag: Tag,
-};
-
-
-type Popularity = { "max": number, "min": number };
-
-enum TagType {
-  GENERAL = 0,
-  ARTIST = 1,
-  COPYRIGHT = 3,
-  CHARACTER = 4,
-}
 
 export default App;
