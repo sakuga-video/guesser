@@ -55,7 +55,7 @@ function App() {
       <p id="score">Score: {score}</p>
       {!playing && <Button variant="contained" disabled={all_tags.length === 0} onClick={start}>Start</Button>}
       {playing && <VideoPlayer tags={selected_tags} on_end={reset} current_video={current_video} set_current_video={set_current_video} />}
-      <Guess on_guess_submitted={add_guess} />
+      <Guess on_guess_submitted={add_guess} all_tags={all_tags} />
       <ol>
         {guesses.toArray().map(([video, guess]) => <li key={video.id}>{video.tag.name}: {guess}</li>)}
       </ol>
@@ -64,7 +64,7 @@ function App() {
 }
 
 function guess_matches(guess: string, video: Video) {
-  return guess === video.tag.name.replaceAll("_", " ");
+  return guess === video.tag.name;
 }
 
 async function fetch_tags() {
