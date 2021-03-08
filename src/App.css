@@ -71,3 +71,11 @@ video::-webkit-media-controls {
   background: rgba(2, 2, 2, .7);
   position: fixed;
 }
+
+#timer {
+  right: 0%;
+  top: 0%;
+  border-radius:100%;
+  margin-top:10px;
+  margin-right:10px;
+}
