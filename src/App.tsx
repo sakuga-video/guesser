@@ -62,11 +62,8 @@ function App() {
     return () => clearInterval(load);
   }, []);
 
-  useEffect(() => {
-    const timeout = setTimeout(() => set_guess_result(undefined), 2_500);
-  }, [guess_result])
-
   const play_next = () => {
+    set_guess_result(undefined);
     if ((index + 1) < selected_tags.length) {
         set_index(index + 1);
     } else {
@@ -95,7 +92,6 @@ function App() {
       is_correct: guess_matches(guess, video),
     })
   }
-  
 
   const add_guess = (guess: string) => {
     if (current_video !== undefined) {
@@ -103,7 +99,6 @@ function App() {
       show_guess_result(current_video, guess);
       set_guesses(new_guesses);
       recalculate_score(new_guesses);
-      play_next();
     }
   }
 
@@ -121,8 +116,8 @@ function App() {
     <React.Fragment>
       {has_played && <Score score={score} max_score={index} />}
       {all_tags.length === 0 && <CircularProgress variant="determinate" value={loading_progress} />}
-      {!playing && !guess_result && <Button variant="contained" disabled={all_tags.length === 0} onClick={start} id="start">Start</Button>}
-      {playing && !guess_result && selected_tags.length > 0 && <VideoPlayer
+      {!playing && <Button variant="contained" disabled={all_tags.length === 0} onClick={start} id="start">Start</Button>}
+      {playing && selected_tags.length > 0 && <VideoPlayer
         tag={selected_tags[index]}
         current_video={current_video}
         set_current_video={set_current_video}
