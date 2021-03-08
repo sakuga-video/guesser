@@ -38,11 +38,12 @@ function App() {
   const [selected_tags, set_selected_tags] = useState<Tag[]>([]);
   const [playing, set_playing] = useState<boolean>(false);
   const [has_played, set_has_played] = useState<boolean>(false);
-  const [guesses, set_guesses] = useState<Map<Video, string>>(Map());
+  const [guesses, set_guesses] = useState<Map<Tag, string>>(Map());
   const [current_video, set_current_video] = useState<Video | undefined>(undefined);
   const [score, set_score] = useState<number>(0);
   const [index, set_index] = useState<number>(0);
-  const [guess_result, set_guess_result] = useState<GuessResult | undefined>(undefined);
+  const [guess_to_show, set_guess_to_show] = useState<Tag | undefined>(undefined);
+  const [timer, set_timer] = useState<number>(0);
 
   useEffect(() => {
     let progress = 10;
@@ -62,8 +63,28 @@ function App() {
     return () => clearInterval(load);
   }, []);
 
+  useEffect(() => {
+    if (guess_to_show) {
+      recalculate_score(guesses);
+      const interval_duration = 50;
+      let timer = 0;
+      const interval = setInterval(() => {
+        if (timer >= RESULT_DISPLAY_DURATION) {
+          set_guess_to_show(undefined);
+          timer = 0;
+        } else {
+          timer += interval_duration;
+        }
+        set_timer(timer);
+      }, interval_duration);
+      return () => clearInterval(interval);
+    }
+  }, [guesses, guess_to_show])
+
   const play_next = () => {
-    set_guess_result(undefined);
+    const tag = selected_tags[index];
+    set_guess_to_show(tag);
+
     if ((index + 1) < selected_tags.length) {
         set_index(index + 1);
     } else {
@@ -85,27 +106,18 @@ function App() {
     set_selected_tags([]);
   }
 
-  const show_guess_result = (video: Video, guess:string) => {
-    set_guess_result({
-      guess,
-      correct_answer: video.tag.name,
-      is_correct: guess_matches(guess, video),
-    })
-  }
-
   const add_guess = (guess: string) => {
-    if (current_video !== undefined) {
-      const new_guesses = guesses.set(current_video, guess);
-      show_guess_result(current_video, guess);
+    const tag = selected_tags[index];
+    if (tag) {
+      const new_guesses = guesses.set(tag, guess);
       set_guesses(new_guesses);
-      recalculate_score(new_guesses);
     }
   }
 
-  const recalculate_score = (guesses: Map<Video, string>) => {
+  const recalculate_score = (guesses: Map<Tag, string>) => {
     let total = 0;
-    guesses.forEach((guess, video) => {
-      if (guess_matches(guess, video)) {
+    guesses.forEach((guess, tag) => {
+      if (guess_matches(guess, tag)) {
         total += 1;
       }
     })
@@ -114,22 +126,27 @@ function App() {
 
   return (
     <React.Fragment>
+      {guess_to_show && <CircularProgress key={index} variant="determinate" value={normalize(timer)} className="controls timer" />}
       {has_played && <Score score={score} max_score={index} />}
       {all_tags.length === 0 && <CircularProgress variant="determinate" value={loading_progress} />}
       {!playing && <Button variant="contained" disabled={all_tags.length === 0} onClick={start} id="start">Start</Button>}
-      {playing && selected_tags.length > 0 && <VideoPlayer
+      {playing && selected_tags.length > 0 && !guess_to_show && <VideoPlayer
         tag={selected_tags[index]}
         current_video={current_video}
         set_current_video={set_current_video}
         play_next_tag={play_next} />}
-      <GuessResultUI guess_result={guess_result} />
-      {playing && !guess_result && <Guess on_guess_submitted={add_guess} />}
+      {guess_to_show && <GuessResultUI guess_result={{guess: guesses.get(guess_to_show), correct_answer: guess_to_show.name}} />}
+      {playing && !guess_to_show && <Guess on_guess_submitted={add_guess} />}
     </React.Fragment>
   );
 }
 
-function guess_matches(guess: string, video: Video) {
-  return guess === video.tag.name;
+const RESULT_DISPLAY_DURATION = 3_500;
+
+const normalize = (value: number) => value * 100 / RESULT_DISPLAY_DURATION;
+
+function guess_matches(guess: string | undefined, tag: Tag) {
+  return guess === tag.name;
 }
 
 async function fetch_tags() {

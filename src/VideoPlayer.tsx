@@ -71,7 +71,7 @@ const VideoPlayer = ({ tag, current_video, set_current_video, play_next_tag }: P
 
     return (
         <React.Fragment>
-            <CircularProgress color={normalize(timer) < 25 ? "secondary" : "primary"} key={tag.id} variant="determinate" value={normalize(timer)} className="controls" id="timer" />
+            <CircularProgress color={normalize(timer) < 25 ? "secondary" : "primary"} key={tag.id} variant="determinate" value={normalize(timer)} className="controls timer" />
             <video muted preload="auto" autoPlay src={current_video?.url} onEnded={play_next_video} />
         </React.Fragment>
     )
