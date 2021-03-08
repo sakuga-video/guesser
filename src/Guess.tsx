@@ -22,7 +22,7 @@ const Guess = ({ on_guess_submitted }: Props) => {
   const on_guess_change = (event: ChangeEvent<{}>, value: Tag | null) => on_guess_submitted(value?.name ?? "");
   
   return (
-    <div id="guess" className="controls">
+    <div id="guess">
       <Autocomplete
         blurOnSelect
         disableClearable
@@ -31,7 +31,7 @@ const Guess = ({ on_guess_submitted }: Props) => {
         getOptionLabel={(tag: Tag) => tag.name.replaceAll("_", " ")}
         onChange={on_guess_change}
         onInputChange={(_, value) => set_search(value)}
-        renderInput={(params) => <TextField {...params} label="Guess the title" />}
+        renderInput={(params) => <TextField {...params} label="Guess the title" variant="filled" />}
       />
     </div>
   );
