@@ -5,10 +5,13 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
+import { lightBlue, red } from '@material-ui/core/colors';
 
 const dark_theme = createMuiTheme({
   palette: {
     type: 'dark',
+    primary: lightBlue,
+    secondary: red
   },
 });
 
