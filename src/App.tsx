@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import { Map } from 'immutable';
 import GuessResultUI, { GuessResult } from './GuessResultUI';
 import Score from './Score';
+import { CircularProgress } from '@material-ui/core';
 
 enum TagType {
   GENERAL = 0,
@@ -32,6 +33,7 @@ export type Video = {
 type Popularity = { "max": number, "min": number };
 
 function App() {
+  const [loading_progress, set_loading_progress] = useState<number>(0);
   const [all_tags, set_all_tags] = useState<Tag[]>([]);
   const [selected_tags, set_selected_tags] = useState<Tag[]>([]);
   const [playing, set_playing] = useState<boolean>(false);
@@ -43,9 +45,21 @@ function App() {
   const [guess_result, set_guess_result] = useState<GuessResult | undefined>(undefined);
 
   useEffect(() => {
-    fetch_tags().then(tags =>
-      set_all_tags(tags.filter(tag => tag.type === TagType.COPYRIGHT))
-    );
+    let progress = 10;
+    set_loading_progress(progress);
+    const load = setInterval(() => {
+      if (progress < 90) {
+        progress+=10;
+        set_loading_progress(progress);
+      } else {
+        clearInterval(load);
+      }
+    }, 100);
+    fetch_tags().then(tags => {
+      set_loading_progress(100);
+      set_all_tags(tags)
+    });
+    return () => clearInterval(load);
   }, []);
 
   useEffect(() => {
@@ -106,6 +120,7 @@ function App() {
   return (
     <React.Fragment>
       {has_played && <Score score={score} max_score={index} />}
+      {all_tags.length === 0 && <CircularProgress variant="determinate" value={loading_progress} />}
       {!playing && !guess_result && <Button variant="contained" disabled={all_tags.length === 0} onClick={start} id="start">Start</Button>}
       {playing && !guess_result && <VideoPlayer
         tags={selected_tags}
@@ -126,7 +141,7 @@ function guess_matches(guess: string, video: Video) {
 }
 
 async function fetch_tags() {
-  const response = await fetch('/api/tag.json?limit=0&order=count');
+  const response = await fetch('/api/tag.json?limit=0&order=count&type='+TagType.COPYRIGHT);
   const tags: Tag[] = await response.json() as Tag[];
   return tags.filter(({ count }) => count > 0);
 }
