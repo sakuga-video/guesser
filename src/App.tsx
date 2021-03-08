@@ -116,7 +116,7 @@ function App() {
         set_index={set_index}
         play_next={play_next} />}
       <GuessResultUI guess_result={guess_result} />
-      {playing && !guess_result && <Guess on_guess_submitted={add_guess} all_tags={all_tags} />}
+      {playing && !guess_result && <Guess on_guess_submitted={add_guess} />}
     </React.Fragment>
   );
 }
