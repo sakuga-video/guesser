@@ -1,6 +1,6 @@
 # A game where you guess anime titles based on short clips
 
-Uses the [sakugabooru api](https://www.sakugabooru.com/help/api)
+Uses the [sakugabooru api](https://www.sakugabooru.com/help/api), which is based on the [moebooru api](https://pybooru.readthedocs.io/en/stable/api_moebooru.html).
 
 ## Available Scripts
 
