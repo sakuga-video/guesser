@@ -1,5 +1,7 @@
 # A game where you guess anime titles based on short clips
 
+Uses the [sakugabooru api](https://www.sakugabooru.com/help/api)
+
 ## Available Scripts
 
 In the project directory, you can run:
