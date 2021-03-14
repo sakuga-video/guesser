@@ -158,7 +158,7 @@ function App() {
   );
 }
 
-const RESULT_DISPLAY_DURATION = 3_500;
+const RESULT_DISPLAY_DURATION = 4_000;
 
 const normalize = (value: number) => value * 100 / RESULT_DISPLAY_DURATION;
 

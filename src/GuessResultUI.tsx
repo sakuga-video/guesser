@@ -5,18 +5,29 @@ const GuessResultUI = ({guess_result}: {guess_result: GuessResult | undefined}) 
         return null;
     }
     if (guess_result.is_correct && guess_result.guess) {
-        return <p id="guess-result" className="controls correct">{guess_result.guess.replaceAll("_", " ")} ({guess_result.correct_answer.replaceAll("_", " ")}) &#10003;</p>
+        return (
+            <div id="guess-result" className="controls correct">
+                <p>{guess_result.guess.replaceAll("_", " ")}</p>
+                {
+                    guess_result.guess !== guess_result.correct_answer &&
+                    <p>({guess_result.correct_answer.replaceAll("_", " ")})</p>
+                }
+                <h1>🎉 is correct 🎊</h1>
+            </div>
+        )
     } else if (guess_result.guess) {
         return (
             <div id="guess-result" className="controls wrong">
                 <p id="incorrect-guess">{guess_result.guess.replaceAll("_", " ")}</p>
-                <p>{guess_result.correct_answer.replaceAll("_", " ")}</p>
+                <h1>is incorrect</h1>
+                <p>It was {guess_result.correct_answer.replaceAll("_", " ")}</p>
             </div>
         );
     } else {
         return (
             <div id="guess-result" className="controls wrong">
-                <p>{guess_result.correct_answer.replaceAll("_", " ")}</p>
+                <h1>No guess</h1>
+                <p>It was {guess_result.correct_answer.replaceAll("_", " ")}</p>
             </div>
         );
     }
