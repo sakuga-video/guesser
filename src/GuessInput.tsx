@@ -1,6 +1,6 @@
-import { TextField } from '@material-ui/core';
+import { Button, Icon, IconButton, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Tag } from './App';
 
 type Props = {
@@ -43,6 +43,9 @@ const GuessInput = ({ on_guess_changed, on_guess_submitted }: Props) => {
         onInputChange={(_, value) => set_search(value)}
         renderInput={(params) => <TextField {...params} label="Guess the title" variant="filled" />}
       />
+      <IconButton type="submit">
+        <Icon>send</Icon>
+      </IconButton>
     </form>
   );
 };

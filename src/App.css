@@ -70,6 +70,7 @@ video::-webkit-media-controls {
   transform: translateX(-50%);
   background: rgba(2, 2, 2, .7);
   position: fixed;
+  display: flex;
 }
 
 .timer {
