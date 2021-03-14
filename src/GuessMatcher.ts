@@ -1,4 +1,3 @@
-import { GuessResult } from "./GuessResultUI";
 import Fuse from "fuse.js";
 
 const Matches = (guess: Guess) => {

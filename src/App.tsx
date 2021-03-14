@@ -5,7 +5,7 @@ import GuessInput from './GuessInput';
 import VideoPlayer from './VideoPlayer';
 import Button from '@material-ui/core/Button';
 import { Map } from 'immutable';
-import GuessResultUI, { GuessResult } from './GuessResultUI';
+import GuessResultUI from './GuessResultUI';
 import Score from './Score';
 import { CircularProgress } from '@material-ui/core';
 import Matcher from './GuessMatcher';
@@ -18,17 +18,17 @@ enum TagType {
 }
 
 export type Tag = {
-  ambiguous: boolean,
-  count: number,
-  id: number,
-  name: string,
-  type: TagType,
+  readonly ambiguous: boolean,
+  readonly count: number,
+  readonly id: number,
+  readonly name: string,
+  readonly type: TagType,
 };
 
 export type Video = {
-  url: string,
-  id: number,
-  tag: Tag,
+  readonly url: string,
+  readonly id: number,
+  readonly tag: Tag,
 };
 
 type Popularity = { "max": number, "min": number };
@@ -59,7 +59,7 @@ function App() {
     }, 100);
     fetch_tags().then(tags => {
       set_loading_progress(100);
-      set_all_tags(tags)
+      set_all_tags(tags);
     });
     return () => clearInterval(load);
   }, []);
@@ -153,7 +153,14 @@ function App() {
             is_correct: guess_matches(guesses.get(guess_to_show), guess_to_show),
           }} />
       }
-      {playing && !guess_to_show && <GuessInput on_guess_changed={set_guess} on_guess_submitted={lock_in_guess} />}
+      {
+        playing && !guess_to_show &&
+        <GuessInput
+          on_guess_changed={set_guess}
+          on_guess_submitted={lock_in_guess}
+          all_tags={all_tags}
+        />
+      }
     </React.Fragment>
   );
 }
@@ -168,7 +175,13 @@ function guess_matches(guess: string | undefined, tag: Tag) {
 
 async function fetch_tags() {
   const response = await fetch('/api/tag.json?limit=0&order=count&type='+TagType.COPYRIGHT);
-  const tags: Tag[] = await response.json() as Tag[];
+  const tags: Tag[] = (await response.json()).map((jsonTag: any) => ({
+    ambiguous: jsonTag.ambiguous,
+    count: jsonTag.count,
+    id: jsonTag.id,
+    name: jsonTag.name.replaceAll("_", " "),
+    type: jsonTag.type,
+  }));
   return tags.filter(({ count }) => count > 0);
 }
 

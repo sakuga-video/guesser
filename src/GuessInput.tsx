@@ -1,25 +1,20 @@
-import { Button, Icon, IconButton, TextField } from '@material-ui/core';
+import { Icon, IconButton, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent } from 'react';
 import { Tag } from './App';
+import { matchSorter, MatchSorterOptions } from 'match-sorter';
 
 type Props = {
   on_guess_changed: (guess: string) => void,
   on_guess_submitted: () => void,
+  all_tags: Tag[],
 }
 
-const GuessInput = ({ on_guess_changed, on_guess_submitted }: Props) => {
-  const [matching_tags, set_matching_tags] = useState<Tag[]>([]);
-  const [search, set_search] = useState<string>("");
-
-  useEffect(() => {
-    if (search) {
-      fetch_tags(search).then(set_matching_tags);
-    } else {
-      set_matching_tags([]);
-    }
-  }, [search]);
-
+const GuessInput = ({
+    on_guess_changed,
+    on_guess_submitted,
+    all_tags
+  }: Props) => {
   const on_guess_change = (event: ChangeEvent<{}>, value: Tag | null) => on_guess_changed(value?.name ?? "");
   
   const on_form_submitted = (event: FormEvent<HTMLFormElement>) => {
@@ -36,11 +31,11 @@ const GuessInput = ({ on_guess_changed, on_guess_submitted }: Props) => {
         autoComplete
         disableClearable
         clearOnEscape
-        options={matching_tags}
+        options={all_tags}
         style={{ width: 300 }}
-        getOptionLabel={(tag: Tag) => tag.name.replaceAll("_", " ")}
+        filterOptions={filter_options}
+        getOptionLabel={tag => tag.name}
         onChange={on_guess_change}
-        onInputChange={(_, value) => set_search(value)}
         renderInput={(params) => <TextField {...params} label="Guess the title" variant="filled" />}
       />
       <IconButton type="submit">
@@ -50,10 +45,12 @@ const GuessInput = ({ on_guess_changed, on_guess_submitted }: Props) => {
   );
 };
 
-async function fetch_tags(search: string) {
-  const response = await fetch('/api/tag.json?limit=25&type=3&order=count&name='+search.toLowerCase().replaceAll(" ", "_"));
-  const tags: Tag[] = await response.json() as Tag[];
-  return tags.filter(({ count }) => count > 0);
-}
+const match_sorter_options: MatchSorterOptions<Tag> = {
+  keys: [tag => tag.name],
+  baseSort: (tag_a, tag_b) => tag_b.item.count - tag_a.item.count,
+};
 
+const filter_options = (options: Tag[], { inputValue }: { inputValue: string}) =>
+  inputValue ? matchSorter(options, inputValue, match_sorter_options).slice(0, 100) : [];
+  
 export default GuessInput;

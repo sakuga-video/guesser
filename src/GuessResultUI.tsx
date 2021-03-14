@@ -7,10 +7,10 @@ const GuessResultUI = ({guess_result}: {guess_result: GuessResult | undefined}) 
     if (guess_result.is_correct && guess_result.guess) {
         return (
             <div id="guess-result" className="controls correct">
-                <p>{guess_result.guess.replaceAll("_", " ")}</p>
+                <p>{guess_result.guess}</p>
                 {
                     guess_result.guess !== guess_result.correct_answer &&
-                    <p>({guess_result.correct_answer.replaceAll("_", " ")})</p>
+                    <p>({guess_result.correct_answer})</p>
                 }
                 <h1>🎉 is correct 🎊</h1>
             </div>
@@ -18,16 +18,16 @@ const GuessResultUI = ({guess_result}: {guess_result: GuessResult | undefined}) 
     } else if (guess_result.guess) {
         return (
             <div id="guess-result" className="controls wrong">
-                <p id="incorrect-guess">{guess_result.guess.replaceAll("_", " ")}</p>
+                <p id="incorrect-guess">{guess_result.guess}</p>
                 <h1>is incorrect</h1>
-                <p>It was {guess_result.correct_answer.replaceAll("_", " ")}</p>
+                <p>It was {guess_result.correct_answer}</p>
             </div>
         );
     } else {
         return (
             <div id="guess-result" className="controls wrong">
                 <h1>No guess</h1>
-                <p>It was {guess_result.correct_answer.replaceAll("_", " ")}</p>
+                <p>It was {guess_result.correct_answer}</p>
             </div>
         );
     }

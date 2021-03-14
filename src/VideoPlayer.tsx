@@ -50,7 +50,7 @@ const VideoPlayer = ({ tag, current_video, set_current_video, play_next_tag }: P
 
     const fetch_video = async ({ tag, page = undefined }: { tag: Tag, page?: number }): Promise<Video> => {
         page = page ?? random(tag.count);
-        const url = '/api/post.json?limit=1&page=' + page + '&tags=' + tag.name;
+        const url = '/api/post.json?limit=1&page=' + page + '&tags=' + tag.name.replaceAll(" ", "_");
         const response = await fetch(url);
         const videos: VideoResponse[] = await response.json();
 
