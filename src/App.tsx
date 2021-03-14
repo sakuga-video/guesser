@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import sample from 'lodash/sample';
 import './App.css';
-import Guess from './Guess';
+import GuessInput from './GuessInput';
 import VideoPlayer from './VideoPlayer';
 import Button from '@material-ui/core/Button';
 import { Map } from 'immutable';
@@ -145,7 +145,7 @@ function App() {
             is_correct: guess_matches(guesses.get(guess_to_show), guess_to_show),
           }} />
       }
-      {playing && !guess_to_show && <Guess on_guess_submitted={add_guess} />}
+      {playing && !guess_to_show && <GuessInput on_guess_submitted={add_guess} />}
     </React.Fragment>
   );
 }

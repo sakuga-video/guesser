@@ -7,7 +7,7 @@ type Props = {
   on_guess_submitted: (guess: string) => void,
 }
 
-const Guess = ({ on_guess_submitted }: Props) => {
+const GuessInput = ({ on_guess_submitted }: Props) => {
   const [matching_tags, set_matching_tags] = useState<Tag[]>([]);
   const [search, set_search] = useState<string>("");
 
@@ -43,4 +43,4 @@ async function fetch_tags(search: string) {
   return tags.filter(({ count }) => count > 0);
 }
 
-export default Guess;
+export default GuessInput;
