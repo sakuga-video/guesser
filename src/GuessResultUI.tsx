@@ -4,8 +4,8 @@ const GuessResultUI = ({guess_result}: {guess_result: GuessResult | undefined}) 
     if (guess_result === undefined) {
         return null;
     }
-    if (guess_result.correct_answer === guess_result.guess) {
-        return <p id="guess-result" className="controls correct">{guess_result.correct_answer.replaceAll("_", " ")} &#10003;</p>
+    if (guess_result.is_correct && guess_result.guess) {
+        return <p id="guess-result" className="controls correct">{guess_result.guess.replaceAll("_", " ")} ({guess_result.correct_answer.replaceAll("_", " ")}) &#10003;</p>
     } else if (guess_result.guess) {
         return (
             <div id="guess-result" className="controls wrong">
@@ -26,6 +26,7 @@ const GuessResultUI = ({guess_result}: {guess_result: GuessResult | undefined}) 
 export type GuessResult = {
     guess?: string,
     correct_answer: string,
+    is_correct: boolean,
 }
 
 export default GuessResultUI;

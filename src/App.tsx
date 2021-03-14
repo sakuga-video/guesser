@@ -8,6 +8,7 @@ import { Map } from 'immutable';
 import GuessResultUI, { GuessResult } from './GuessResultUI';
 import Score from './Score';
 import { CircularProgress } from '@material-ui/core';
+import Matcher from './GuessMatcher';
 
 enum TagType {
   GENERAL = 0,
@@ -135,7 +136,15 @@ function App() {
         current_video={current_video}
         set_current_video={set_current_video}
         play_next_tag={play_next} />}
-      {guess_to_show && <GuessResultUI guess_result={{guess: guesses.get(guess_to_show), correct_answer: guess_to_show.name}} />}
+      {
+        guess_to_show &&
+        <GuessResultUI
+          guess_result={{
+            guess: guesses.get(guess_to_show),
+            correct_answer: guess_to_show.name,
+            is_correct: guess_matches(guesses.get(guess_to_show), guess_to_show),
+          }} />
+      }
       {playing && !guess_to_show && <Guess on_guess_submitted={add_guess} />}
     </React.Fragment>
   );
@@ -146,7 +155,7 @@ const RESULT_DISPLAY_DURATION = 3_500;
 const normalize = (value: number) => value * 100 / RESULT_DISPLAY_DURATION;
 
 function guess_matches(guess: string | undefined, tag: Tag) {
-  return guess === tag.name;
+  return guess !== undefined && Matcher({guess, answer: tag.name});
 }
 
 async function fetch_tags() {
