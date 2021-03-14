@@ -38,7 +38,7 @@ const GuessInput = ({ on_guess_submitted }: Props) => {
 };
 
 async function fetch_tags(search: string) {
-  const response = await fetch('/api/tag.json?limit=25&type=3&order=count&name='+search.replaceAll(" ", "_"));
+  const response = await fetch('/api/tag.json?limit=25&type=3&order=count&name='+search.toLowerCase().replaceAll(" ", "_"));
   const tags: Tag[] = await response.json() as Tag[];
   return tags.filter(({ count }) => count > 0);
 }
