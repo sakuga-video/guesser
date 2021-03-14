@@ -24,8 +24,12 @@ const GuessInput = ({ on_guess_submitted }: Props) => {
   return (
     <div id="guess">
       <Autocomplete
-        blurOnSelect
+        selectOnFocus
+        clearOnBlur
+        autoHighlight
+        autoComplete
         disableClearable
+        clearOnEscape
         options={matching_tags}
         style={{ width: 300 }}
         getOptionLabel={(tag: Tag) => tag.name.replaceAll("_", " ")}
