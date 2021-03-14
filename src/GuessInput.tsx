@@ -1,13 +1,14 @@
 import { TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Tag } from './App';
 
 type Props = {
-  on_guess_submitted: (guess: string) => void,
+  on_guess_changed: (guess: string) => void,
+  on_guess_submitted: () => void,
 }
 
-const GuessInput = ({ on_guess_submitted }: Props) => {
+const GuessInput = ({ on_guess_changed, on_guess_submitted }: Props) => {
   const [matching_tags, set_matching_tags] = useState<Tag[]>([]);
   const [search, set_search] = useState<string>("");
 
@@ -19,10 +20,15 @@ const GuessInput = ({ on_guess_submitted }: Props) => {
     }
   }, [search]);
 
-  const on_guess_change = (event: ChangeEvent<{}>, value: Tag | null) => on_guess_submitted(value?.name ?? "");
+  const on_guess_change = (event: ChangeEvent<{}>, value: Tag | null) => on_guess_changed(value?.name ?? "");
   
+  const on_form_submitted = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    on_guess_submitted();
+  }
+
   return (
-    <div id="guess">
+    <form id="guess" onSubmit={on_form_submitted}>
       <Autocomplete
         selectOnFocus
         clearOnBlur
@@ -37,7 +43,7 @@ const GuessInput = ({ on_guess_submitted }: Props) => {
         onInputChange={(_, value) => set_search(value)}
         renderInput={(params) => <TextField {...params} label="Guess the title" variant="filled" />}
       />
-    </div>
+    </form>
   );
 };
 

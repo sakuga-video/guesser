@@ -80,7 +80,7 @@ function App() {
       }, interval_duration);
       return () => clearInterval(interval);
     }
-  }, [guesses, guess_to_show])
+  }, [guesses, guess_to_show]);
 
   const play_next = () => {
     const tag = selected_tags[index];
@@ -115,6 +115,14 @@ function App() {
     }
   }
 
+  const lock_in_guess = () => {
+    const tag = selected_tags[index];
+    const guess = guesses.get(tag);
+    if (guess) {
+      play_next();
+    }
+  }
+
   const recalculate_score = (guesses: Map<Tag, string>) => {
     let total = 0;
     guesses.forEach((guess, tag) => {
@@ -145,7 +153,7 @@ function App() {
             is_correct: guess_matches(guesses.get(guess_to_show), guess_to_show),
           }} />
       }
-      {playing && !guess_to_show && <GuessInput on_guess_submitted={set_guess} />}
+      {playing && !guess_to_show && <GuessInput on_guess_changed={set_guess} on_guess_submitted={lock_in_guess} />}
     </React.Fragment>
   );
 }
