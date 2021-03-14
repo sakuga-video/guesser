@@ -107,7 +107,7 @@ function App() {
     set_selected_tags([]);
   }
 
-  const add_guess = (guess: string) => {
+  const set_guess = (guess: string) => {
     const tag = selected_tags[index];
     if (tag) {
       const new_guesses = guesses.set(tag, guess);
@@ -145,7 +145,7 @@ function App() {
             is_correct: guess_matches(guesses.get(guess_to_show), guess_to_show),
           }} />
       }
-      {playing && !guess_to_show && <GuessInput on_guess_submitted={add_guess} />}
+      {playing && !guess_to_show && <GuessInput on_guess_submitted={set_guess} />}
     </React.Fragment>
   );
 }
