@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/guesser/static/css/main.9bab3c4e.chunk.css",
-    "main.js": "/guesser/static/js/main.ec0084c2.chunk.js",
-    "main.js.map": "/guesser/static/js/main.ec0084c2.chunk.js.map",
+    "main.js": "/guesser/static/js/main.62c8a90b.chunk.js",
+    "main.js.map": "/guesser/static/js/main.62c8a90b.chunk.js.map",
     "runtime-main.js": "/guesser/static/js/runtime-main.5e31176c.js",
     "runtime-main.js.map": "/guesser/static/js/runtime-main.5e31176c.js.map",
-    "static/js/2.74293d99.chunk.js": "/guesser/static/js/2.74293d99.chunk.js",
-    "static/js/2.74293d99.chunk.js.map": "/guesser/static/js/2.74293d99.chunk.js.map",
+    "static/js/2.122b47aa.chunk.js": "/guesser/static/js/2.122b47aa.chunk.js",
+    "static/js/2.122b47aa.chunk.js.map": "/guesser/static/js/2.122b47aa.chunk.js.map",
     "static/js/3.a454fbba.chunk.js": "/guesser/static/js/3.a454fbba.chunk.js",
     "static/js/3.a454fbba.chunk.js.map": "/guesser/static/js/3.a454fbba.chunk.js.map",
     "index.html": "/guesser/index.html",
     "static/css/main.9bab3c4e.chunk.css.map": "/guesser/static/css/main.9bab3c4e.chunk.css.map",
-    "static/js/2.74293d99.chunk.js.LICENSE.txt": "/guesser/static/js/2.74293d99.chunk.js.LICENSE.txt"
+    "static/js/2.122b47aa.chunk.js.LICENSE.txt": "/guesser/static/js/2.122b47aa.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.5e31176c.js",
-    "static/js/2.74293d99.chunk.js",
+    "static/js/2.122b47aa.chunk.js",
     "static/css/main.9bab3c4e.chunk.css",
-    "static/js/main.ec0084c2.chunk.js"
+    "static/js/main.62c8a90b.chunk.js"
   ]
 }
