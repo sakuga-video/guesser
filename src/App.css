@@ -72,7 +72,7 @@ video::-webkit-media-controls {
 
 #guess {
   z-index: 2147483647;
-  bottom: 0%;
+  bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(2, 2, 2, .7);
