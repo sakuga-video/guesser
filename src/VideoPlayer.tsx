@@ -1,7 +1,7 @@
 import { CircularProgress } from "@material-ui/core";
-import { random } from "lodash";
 import React, { useEffect, useState } from "react";
 import { Tag, Video } from "./App";
+import { fetch_video, increment } from "./SakugaAPI";
 
 type Props = {
     tag: Tag,
@@ -16,9 +16,10 @@ const VideoPlayer = ({ tag, current_video, set_current_video, play_next_tag }: P
     
     useEffect(() => {
         let mounted = true;
-        fetch_video({ tag }).then(video => {
+        fetch_video({ tag }).then(video_page => {
             if (mounted) {
-                set_current_video(video);
+                set_current_video(video_page.data);
+                set_page(video_page.page);
             }
         });
         return () => { mounted = false };
@@ -43,30 +44,10 @@ const VideoPlayer = ({ tag, current_video, set_current_video, play_next_tag }: P
 
     const play_next_video = () => {
         const next_page = increment(page!, tag);
-        fetch_video({ tag, page: next_page }).then(video => {
-            set_current_video(video)
+        fetch_video({ tag, page: next_page }).then(video_page => {
+            set_current_video(video_page.data);
+            set_page(video_page.page);
         });
-    }
-
-    const fetch_video = async ({ tag, page = undefined }: { tag: Tag, page?: number }): Promise<Video> => {
-        page = page ?? random(tag.count);
-        const url = '/api/post.json?limit=1&page=' + page + '&tags=' + tag.name.replaceAll(" ", "_");
-        const response = await fetch(url);
-        const videos: VideoResponse[] = await response.json();
-
-        if (videoIsValid(videos[0])) {
-            set_page(page);
-            return {
-                url: videos[0].file_url,
-                id: videos[0].id,
-                tag: tag,
-            };
-        } else {
-            return fetch_video({
-                tag,
-                page: increment(page, tag)
-            });
-        }
     }
 
     return (
@@ -80,19 +61,5 @@ const VideoPlayer = ({ tag, current_video, set_current_video, play_next_tag }: P
 const TIMER_LENGTH = 30_000;
 
 const normalize = (value: number) => (TIMER_LENGTH - value) * 100 / TIMER_LENGTH;
-
-const increment = (page: number, tag: Tag) => (page + 1) % tag.count;
-
-function videoIsValid(video: any) {
-    return video
-        && video.file_url
-        && (video.file_ext === "mp4" || video.file_ext === "webm")
-        && video.id;
-}
-
-type VideoResponse = {
-    file_url: string,
-    id: number,
-};
 
 export default VideoPlayer;

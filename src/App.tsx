@@ -9,8 +9,9 @@ import GuessResultUI from './GuessResultUI';
 import Score from './Score';
 import { CircularProgress } from '@material-ui/core';
 import Matcher from './GuessMatcher';
+import { fetch_tags } from './SakugaAPI';
 
-enum TagType {
+export enum TagType {
   GENERAL = 0,
   ARTIST = 1,
   COPYRIGHT = 3,
@@ -171,18 +172,6 @@ const normalize = (value: number) => value * 100 / RESULT_DISPLAY_DURATION;
 
 function guess_matches(guess: string | undefined, tag: Tag) {
   return guess !== undefined && Matcher({guess, answer: tag.name});
-}
-
-async function fetch_tags() {
-  const response = await fetch('/api/tag.json?limit=0&order=count&type='+TagType.COPYRIGHT);
-  const tags: Tag[] = (await response.json()).map((jsonTag: any) => ({
-    ambiguous: jsonTag.ambiguous,
-    count: jsonTag.count,
-    id: jsonTag.id,
-    name: jsonTag.name.replaceAll("_", " "),
-    type: jsonTag.type,
-  }));
-  return tags.filter(({ count }) => count > 0);
 }
 
 function choose_random_tags(tags: Tag[]): Tag[] {
