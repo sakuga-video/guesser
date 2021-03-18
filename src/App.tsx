@@ -184,6 +184,9 @@ const popularity_list: Popularity[] = [
   { "max": 100000, "min": 500 },
   { "max": 100000, "min": 500 },
   { "max": 100000, "min": 500 },
+  { "max": 100000, "min": 500 },
+  { "max": 100000, "min": 500 },
+  { "max": 500, "min": 100 },
   { "max": 500, "min": 100 },
   { "max": 500, "min": 100 },
   { "max": 500, "min": 100 },
@@ -193,11 +196,8 @@ const popularity_list: Popularity[] = [
   { "max": 100, "min": 25 },
   { "max": 100, "min": 25 },
   { "max": 100, "min": 25 },
-  { "max": 100, "min": 25 },
-  { "max": 25, "min": 10 },
-  { "max": 25, "min": 10 },
-  { "max": 25, "min": 10 },
-  { "max": 25, "min": 10 },
+  { "max": 25, "min": 1 },
+  { "max": 25, "min": 1 },
   { "max": 1, "min": 1 },
 ];
 
