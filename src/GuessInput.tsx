@@ -36,7 +36,7 @@ const GuessInput = ({
         filterOptions={filter_options}
         getOptionLabel={tag => tag.name}
         onChange={on_guess_change}
-        renderInput={(params) => <TextField {...params} label="Guess the title" variant="filled" />}
+        renderInput={(params) => <TextField {...params} label="Guess the title" variant="filled" autoFocus />}
       />
       <IconButton type="submit">
         <Icon>send</Icon>
