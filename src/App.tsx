@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import sample from 'lodash/sample';
 import './App.css';
 import GuessInput from './GuessInput';
 import VideoPlayer from './VideoPlayer';
 import Button from '@material-ui/core/Button';
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import GuessResultUI from './GuessResultUI';
 import Score from './Score';
 import { CircularProgress } from '@material-ui/core';
-import Matcher from './GuessMatcher';
-import { fetch_tags } from './SakugaAPI';
+import guess_matches, { Guess } from './GuessMatcher';
+import { fetch_all_tags } from './SakugaAPI';
+import VideoWrapper, { Video } from './VideoWrapper';
+import { useTimer } from 'use-timer';
 
 export enum TagType {
   GENERAL = 0,
@@ -26,26 +28,42 @@ export type Tag = {
   readonly type: TagType,
 };
 
-export type Video = {
-  readonly url: string,
-  readonly id: number,
-  readonly tag: Tag,
-};
-
 type Popularity = { "max": number, "min": number };
 
+const TIMER_INTERVAL = 50;
+
+const NEXT_TAG_TIMER_LENGTH = 10 * 1000 / TIMER_INTERVAL;
+const normalize = (value: number) => (NEXT_TAG_TIMER_LENGTH - value) * 100 / NEXT_TAG_TIMER_LENGTH;
+
+const RESULT_DISPLAY_DURATION = 4 * 1000 / TIMER_INTERVAL;
+const normalize_result_timer = (value: number) => value * 100 / RESULT_DISPLAY_DURATION;
+
 function App() {
-  const [loading_progress, set_loading_progress] = useState<number>(0);
+  const [loading_progress, set_loading_progress] = useState(0);
   const [all_tags, set_all_tags] = useState<Tag[]>([]);
+  const [videos, set_videos] = useState(List<Video>());
+  const [video_wrapper, set_video_wrapper] = useState<VideoWrapper | undefined>(undefined);
   const [selected_tags, set_selected_tags] = useState<Tag[]>([]);
-  const [playing, set_playing] = useState<boolean>(false);
-  const [has_played, set_has_played] = useState<boolean>(false);
-  const [guesses, set_guesses] = useState<Map<Tag, string>>(Map());
-  const [current_video, set_current_video] = useState<Video | undefined>(undefined);
-  const [score, set_score] = useState<number>(0);
-  const [index, set_index] = useState<number>(0);
-  const [guess_to_show, set_guess_to_show] = useState<Tag | undefined>(undefined);
-  const [timer, set_timer] = useState<number>(0);
+  const [playing, set_playing] = useState(false);
+  const [guesses, set_guesses] = useState(Map<number, Guess>());
+  const [index, set_index] = useState(0);
+  const [guess_to_show, set_guess_to_show] = useState<number | undefined>(undefined);
+
+  const next_tag_timer = useTimer({
+    interval: TIMER_INTERVAL,
+    endTime: NEXT_TAG_TIMER_LENGTH,
+    onTimeOver: () => {
+      set_guess_to_show(index);
+    },
+  });
+  const guess_result_timer = useTimer({
+    endTime: RESULT_DISPLAY_DURATION,
+    interval: TIMER_INTERVAL,
+    onTimeOver: () => {
+      set_guess_to_show(undefined);
+      /* play next video, or show end screen if it was the last video */
+    }
+  });
 
   useEffect(() => {
     let progress = 10;
@@ -58,34 +76,22 @@ function App() {
         clearInterval(load);
       }
     }, 100);
-    fetch_tags().then(tags => {
+    fetch_all_tags().then(tags => {
       set_loading_progress(100);
       set_all_tags(tags);
+      set_video_wrapper(new VideoWrapper(tags));
     });
     return () => clearInterval(load);
   }, []);
 
-  useEffect(() => {
-    if (guess_to_show) {
-      recalculate_score(guesses);
-      const interval_duration = 50;
-      let timer = 0;
-      const interval = setInterval(() => {
-        if (timer >= RESULT_DISPLAY_DURATION) {
-          set_guess_to_show(undefined);
-          timer = 0;
-        } else {
-          timer += interval_duration;
-        }
-        set_timer(timer);
-      }, interval_duration);
-      return () => clearInterval(interval);
+  const play_next_tag = () => {
+    if (!guesses.has(index)) {
+      const new_guesses = guesses.set(index, {
+        answers: videos.last<Video>()?.tags ?? [],
+      });
+      set_guesses(new_guesses);
     }
-  }, [guesses, guess_to_show]);
-
-  const play_next = () => {
-    const tag = selected_tags[index];
-    set_guess_to_show(tag);
+    set_guess_to_show(index);
 
     if ((index + 1) < selected_tags.length) {
         set_index(index + 1);
@@ -97,10 +103,9 @@ function App() {
   const start = () => {
     set_selected_tags(choose_random_tags(all_tags));
     set_playing(true);
-    set_has_played(true);
     set_guesses(Map());
-    set_score(0);
     set_index(0);
+    next_tag_timer.start();
   }
 
   const reset = () => {
@@ -109,49 +114,87 @@ function App() {
   }
 
   const set_guess = (guess: string) => {
-    const tag = selected_tags[index];
-    if (tag) {
-      const new_guesses = guesses.set(tag, guess);
-      set_guesses(new_guesses);
-    }
+    const new_guesses = guesses.set(index, {
+      guess,
+      answers: videos.last<Video>()?.tags ?? []
+    });
+    set_guesses(new_guesses);
   }
 
   const lock_in_guess = () => {
-    const tag = selected_tags[index];
-    const guess = guesses.get(tag);
+    const guess = guesses.get(index);
     if (guess) {
-      play_next();
+      play_next_tag();
     }
   }
 
-  const recalculate_score = (guesses: Map<Tag, string>) => {
+  const add_video = useCallback(
+    (video: Video) => {
+      console.log("app: set_videos")
+      set_videos(videos => videos.push(video))
+    },
+    []
+  );
+
+  const score = (guesses: Map<number, Guess>) => {
     let total = 0;
-    guesses.forEach((guess, tag) => {
-      if (guess_matches(guess, tag)) {
+    guesses.forEach(guess => {
+      if (guess_matches(guess).matches) {
         total += 1;
       }
     })
-    set_score(total);
+    return total;
   }
 
   return (
     <React.Fragment>
-      {guess_to_show && <CircularProgress key={index} variant="determinate" value={normalize(timer)} className="controls timer" />}
-      {has_played && <Score score={score} max_score={index} />}
-      {all_tags.length === 0 && <CircularProgress variant="determinate" value={loading_progress} />}
-      {!playing && <Button variant="contained" disabled={all_tags.length === 0} onClick={start} id="start">Start</Button>}
-      {playing && selected_tags.length > 0 && !guess_to_show && <VideoPlayer
-        tag={selected_tags[index]}
-        current_video={current_video}
-        set_current_video={set_current_video}
-        play_next_tag={play_next} />}
+      {
+        guess_to_show &&
+        <CircularProgress
+          variant="determinate"
+          value={normalize_result_timer(guess_result_timer.time)}
+          className="controls timer" />
+      }
+      {
+        playing && <Score score={score(guesses)} max_score={index} />
+      }
+      {
+        all_tags.length === 0 &&
+        <CircularProgress variant="determinate" value={loading_progress} />
+      }
+      {
+        !playing &&
+        <Button
+          variant="contained"
+          disabled={all_tags.length === 0}
+          onClick={start}
+          id="start">
+            Start
+        </Button>
+      }
+      {
+        playing && selected_tags.length > 0 && !guess_to_show && video_wrapper &&
+        <React.Fragment>
+          <CircularProgress
+            color={normalize(next_tag_timer.time) < 25 ? "secondary" : "primary"}
+            key={selected_tags[index].id}
+            variant="determinate"
+            value={normalize(next_tag_timer.time)}
+            className="controls timer" />
+          <VideoPlayer
+            tag={selected_tags[index]}
+            video={videos.last()}
+            on_video_changed={add_video}
+            video_wrapper={video_wrapper}
+          />
+        </React.Fragment>
+      }
       {
         guess_to_show &&
         <GuessResultUI
           guess_result={{
-            guess: guesses.get(guess_to_show),
-            correct_answer: guess_to_show.name,
-            is_correct: guess_matches(guesses.get(guess_to_show), guess_to_show),
+            guess: guesses.get(guess_to_show)!,
+            match_result: guess_matches(guesses.get(guess_to_show)!),
           }} />
       }
       {
@@ -164,14 +207,6 @@ function App() {
       }
     </React.Fragment>
   );
-}
-
-const RESULT_DISPLAY_DURATION = 4_000;
-
-const normalize = (value: number) => value * 100 / RESULT_DISPLAY_DURATION;
-
-function guess_matches(guess: string | undefined, tag: Tag) {
-  return guess !== undefined && Matcher({guess, answer: tag.name});
 }
 
 function choose_random_tags(tags: Tag[]): Tag[] {
