@@ -7,13 +7,12 @@ import VideoPlayer from './VideoPlayer';
 import Button from '@material-ui/core/Button';
 import GuessResultUI from './GuessResultUI';
 import Score from './Score';
-import { CircularProgress } from '@material-ui/core';
 import guess_matches, { Guess } from './GuessMatcher';
 import { fetch_all_tags } from './SakugaAPI';
 import VideoWrapper from './VideoWrapper';
-import { useTimer } from 'use-timer';
 import { RootState, store } from './app/store';
-import { end_next_tag_timer, end_result_timer, start } from './appSlice';
+import { show_next_tag, start, submit_guess } from './appSlice';
+import Timer from './Timer';
 
 export enum TagType {
   GENERAL = 0,
@@ -32,17 +31,9 @@ export type Tag = {
 
 type Popularity = { "max": number, "min": number };
 
-const TIMER_INTERVAL = 50;
-
-const NEXT_TAG_TIMER_LENGTH = 10 * 1000 / TIMER_INTERVAL;
-const normalize = (value: number) => (NEXT_TAG_TIMER_LENGTH - value) * 100 / NEXT_TAG_TIMER_LENGTH;
-
-const RESULT_DISPLAY_DURATION = 4 * 1000 / TIMER_INTERVAL;
-const normalize_result_timer = (value: number) => value * 100 / RESULT_DISPLAY_DURATION;
-
-const LOADING_DURATION = 0.8 * 1000 / TIMER_INTERVAL;
-const normalize_loading_timer = (value: number) => value * 90 / LOADING_DURATION;
-
+const TAG_TIMER_DURATION = 30;
+const RESULT_DISPLAY_DURATION = 4;
+const LOADING_DURATION = 0.8;
 export const POPULARITY_LIST: Popularity[] = [
   { "max": 100000, "min": 500 },
   { "max": 100000, "min": 500 },
@@ -95,48 +86,30 @@ function App() {
 
   const [all_tags, set_all_tags] = useState<Tag[]>([]);
   const [video_wrapper, set_video_wrapper] = useState<VideoWrapper | undefined>(undefined);
-  const next_tag_timer = useTimer({
-    interval: TIMER_INTERVAL,
-    endTime: NEXT_TAG_TIMER_LENGTH,
-    onTimeOver: () => {
-      dispatch(end_next_tag_timer());
-    },
-  });
-  const guess_result_timer = useTimer({
-    endTime: RESULT_DISPLAY_DURATION,
-    interval: TIMER_INTERVAL,
-    onTimeOver: () => {
-      dispatch(end_result_timer());
-    }
-  });
-  const loading_progress_timer = useTimer({
-    endTime: LOADING_DURATION,
-    interval: TIMER_INTERVAL,
-  });
-  const start_loading_progress_timer = loading_progress_timer.start;
+
   useEffect(() => {
     fetch_all_tags().then(tags => {
       set_all_tags(tags);
       set_video_wrapper(new VideoWrapper(tags));
     });
-    start_loading_progress_timer();
-  }, [start_loading_progress_timer]);
+  }, []);
 
   return (
     <React.Fragment>
       {
         guess_to_show !== undefined &&
-        <CircularProgress
-          variant="determinate"
-          value={normalize_result_timer(guess_result_timer.time)}
-          className="controls timer" />
+        <Timer
+          duration={RESULT_DISPLAY_DURATION}
+          on_time_over={() => dispatch(show_next_tag())}
+          className={"controls timer"}
+        />
       }
       {
         playing && <Score score={score(guesses)} max_score={index} />
       }
       {
         all_tags.length === 0 &&
-        <CircularProgress variant="determinate" value={all_tags.length > 0 ? 100 : normalize_loading_timer(loading_progress_timer.time)} />
+        <Timer duration={LOADING_DURATION} />
       }
       {
         !playing &&
@@ -151,12 +124,13 @@ function App() {
       {
         playing && tags.length > 0 && guess_to_show === undefined && video_wrapper &&
         <React.Fragment>
-          <CircularProgress
-            color={normalize(next_tag_timer.time) < 25 ? "secondary" : "primary"}
-            key={tags[index].id}
-            variant="determinate"
-            value={normalize(next_tag_timer.time)}
-            className="controls timer" />
+          <Timer
+            duration={TAG_TIMER_DURATION}
+            on_time_over={() => dispatch(submit_guess())}
+            count_down={true}
+            show_emergency_color={true}
+            className={"controls timer"}
+          />
           <VideoPlayer
             tag={tags[index]}
             video={videos[videos.length - 1]}

@@ -35,7 +35,7 @@ const GuessResultUI = ({guess_result}: {guess_result: GuessResult }) => {
 
 const answer_ui = (answers: Tag[]) => {
     if (answers.length > 0) {
-        return <p>it was {sortBy(answers, tag => tag.count)[0].name}</p>
+        return <p>it was {sortBy(answers, tag => tag.count)[answers.length - 1].name}</p>
     } else {
         return null;
     }
