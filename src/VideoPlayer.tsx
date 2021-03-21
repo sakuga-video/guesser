@@ -1,29 +1,30 @@
 import { useEffect, useState } from "react";
-import { Tag } from "./App";
+import { Tag, useThunkDispatch } from "./App";
+import { change_video } from "./appSlice";
 import { fetch_video, increment, Page, VideoResponse } from "./SakugaAPI";
 import VideoWrapper, { Video } from "./VideoWrapper";
 
 type Props = {
     tag: Tag,
     video: Video | undefined,
-    on_video_changed: (video: Video) => void,
     video_wrapper: VideoWrapper,
 };
 
-const VideoPlayer = ({ tag, video, on_video_changed, video_wrapper }: Props) => {
+const VideoPlayer = ({ tag, video, video_wrapper }: Props) => {
     const [page, set_page] = useState<number | undefined>(undefined);
+    const dispatch = useThunkDispatch();
 
     useEffect(() => {
         let mounted = true;
         fetch_video({ tag }).then(video_page => {
             if (mounted) {
                 const video = video_wrapper.wrap(video_page.data);
-                on_video_changed(video);
+                dispatch(change_video(video));
                 set_page(video_page.page);
             }
         });
         return () => { mounted = false };
-    }, [tag, video_wrapper, on_video_changed]);
+    }, [tag, video_wrapper, dispatch]);
 
     const play_next_video = () => {
         const next_page = increment(page!, tag);
@@ -32,7 +33,7 @@ const VideoPlayer = ({ tag, video, on_video_changed, video_wrapper }: Props) => 
 
     const set_video = (video_page: Page<VideoResponse>) => {
         const video = video_wrapper.wrap(video_page.data);
-        on_video_changed(video);
+        dispatch(change_video(video));
         set_page(video_page.page);
     }
 

@@ -6,6 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { lightBlue, red } from '@material-ui/core/colors';
+import { store } from './app/store';
+import { Provider } from 'react-redux';
 
 const dark_theme = createMuiTheme({
   palette: {
@@ -18,7 +20,9 @@ const dark_theme = createMuiTheme({
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={dark_theme}>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')

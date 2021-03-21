@@ -1,6 +1,6 @@
-import React from 'react';
 import { Tag } from './App';
 import { Guess, MatchResult } from './GuessMatcher';
+import { sortBy } from 'lodash';
 
 const GuessResultUI = ({guess_result}: {guess_result: GuessResult }) => {
     if (guess_result.match_result.matches && guess_result.guess.guess) {
@@ -35,7 +35,7 @@ const GuessResultUI = ({guess_result}: {guess_result: GuessResult }) => {
 
 const answer_ui = (answers: Tag[]) => {
     if (answers.length > 0) {
-        return <p>it was {answers.sort(tag => tag.count)[0].name}</p>
+        return <p>it was {sortBy(answers, tag => tag.count)[0].name}</p>
     } else {
         return null;
     }

@@ -1,25 +1,20 @@
 import { Icon, IconButton, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { ChangeEvent, FormEvent } from 'react';
-import { Tag } from './App';
+import { Tag, useThunkDispatch } from './App';
 import { matchSorter, MatchSorterOptions } from 'match-sorter';
+import { change_guess, submit_guess } from './appSlice';
 
-type Props = {
-  on_guess_changed: (guess: string) => void,
-  on_guess_submitted: () => void,
-  all_tags: Tag[],
-}
+const GuessInput = ({ all_tags }: { all_tags: Tag[] }) => {
+  const dispatch = useThunkDispatch();
 
-const GuessInput = ({
-    on_guess_changed,
-    on_guess_submitted,
-    all_tags
-  }: Props) => {
-  const on_guess_change = (event: ChangeEvent<{}>, value: Tag | null) => on_guess_changed(value?.name ?? "");
-  
+  const on_guess_change = (_: ChangeEvent<{}>, value: Tag | null) => {
+    dispatch(change_guess(value?.name ?? ""));
+  }
+
   const on_form_submitted = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    on_guess_submitted();
+    dispatch(submit_guess());
   }
 
   return (
