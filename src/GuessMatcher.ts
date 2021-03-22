@@ -17,16 +17,13 @@ const Matches = (guess: Guess): MatchResult => {
     const options = {
         includeScore: true,
         threshold: 0.1,
-        distance: 0,
-        keys: ["name"],
       };
-    const fuse = new Fuse(guess.answers, options);
+    const fuse = new Fuse(guess.answers.map(tag => tag.name), options);
     const search_results = fuse.search(guess.guess);
-
     return {
         matches: search_results.length > 0,
         exact: search_results[0]?.score === 0,
-        closest: search_results[0]?.item.name,
+        closest: search_results[0]?.item,
     }
 }
 
