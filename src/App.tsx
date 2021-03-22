@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import sample from 'lodash/sample';
 import './App.css';
 import GuessInput from './GuessInput';
 import VideoPlayer from './VideoPlayer';
 import Button from '@material-ui/core/Button';
-import { Map } from 'immutable';
 import GuessResultUI from './GuessResultUI';
 import Score from './Score';
-import { CircularProgress } from '@material-ui/core';
-import Matcher from './GuessMatcher';
-import { fetch_tags } from './SakugaAPI';
+import guess_matches, { Guess } from './GuessMatcher';
+import { fetch_all_tags } from './SakugaAPI';
+import VideoWrapper from './VideoWrapper';
+import { RootState, store } from './app/store';
+import { show_next_tag, start, submit_guess } from './appSlice';
+import Timer from './Timer';
 
 export enum TagType {
   GENERAL = 0,
@@ -26,161 +29,12 @@ export type Tag = {
   readonly type: TagType,
 };
 
-export type Video = {
-  readonly url: string,
-  readonly id: number,
-  readonly tag: Tag,
-};
-
 type Popularity = { "max": number, "min": number };
 
-function App() {
-  const [loading_progress, set_loading_progress] = useState<number>(0);
-  const [all_tags, set_all_tags] = useState<Tag[]>([]);
-  const [selected_tags, set_selected_tags] = useState<Tag[]>([]);
-  const [playing, set_playing] = useState<boolean>(false);
-  const [has_played, set_has_played] = useState<boolean>(false);
-  const [guesses, set_guesses] = useState<Map<Tag, string>>(Map());
-  const [current_video, set_current_video] = useState<Video | undefined>(undefined);
-  const [score, set_score] = useState<number>(0);
-  const [index, set_index] = useState<number>(0);
-  const [guess_to_show, set_guess_to_show] = useState<Tag | undefined>(undefined);
-  const [timer, set_timer] = useState<number>(0);
-
-  useEffect(() => {
-    let progress = 10;
-    set_loading_progress(progress);
-    const load = setInterval(() => {
-      if (progress < 90) {
-        progress+=10;
-        set_loading_progress(progress);
-      } else {
-        clearInterval(load);
-      }
-    }, 100);
-    fetch_tags().then(tags => {
-      set_loading_progress(100);
-      set_all_tags(tags);
-    });
-    return () => clearInterval(load);
-  }, []);
-
-  useEffect(() => {
-    if (guess_to_show) {
-      recalculate_score(guesses);
-      const interval_duration = 50;
-      let timer = 0;
-      const interval = setInterval(() => {
-        if (timer >= RESULT_DISPLAY_DURATION) {
-          set_guess_to_show(undefined);
-          timer = 0;
-        } else {
-          timer += interval_duration;
-        }
-        set_timer(timer);
-      }, interval_duration);
-      return () => clearInterval(interval);
-    }
-  }, [guesses, guess_to_show]);
-
-  const play_next = () => {
-    const tag = selected_tags[index];
-    set_guess_to_show(tag);
-
-    if ((index + 1) < selected_tags.length) {
-        set_index(index + 1);
-    } else {
-        reset();
-    }
-  }
-  
-  const start = () => {
-    set_selected_tags(choose_random_tags(all_tags));
-    set_playing(true);
-    set_has_played(true);
-    set_guesses(Map());
-    set_score(0);
-    set_index(0);
-  }
-
-  const reset = () => {
-    set_playing(false);
-    set_selected_tags([]);
-  }
-
-  const set_guess = (guess: string) => {
-    const tag = selected_tags[index];
-    if (tag) {
-      const new_guesses = guesses.set(tag, guess);
-      set_guesses(new_guesses);
-    }
-  }
-
-  const lock_in_guess = () => {
-    const tag = selected_tags[index];
-    const guess = guesses.get(tag);
-    if (guess) {
-      play_next();
-    }
-  }
-
-  const recalculate_score = (guesses: Map<Tag, string>) => {
-    let total = 0;
-    guesses.forEach((guess, tag) => {
-      if (guess_matches(guess, tag)) {
-        total += 1;
-      }
-    })
-    set_score(total);
-  }
-
-  return (
-    <React.Fragment>
-      {guess_to_show && <CircularProgress key={index} variant="determinate" value={normalize(timer)} className="controls timer" />}
-      {has_played && <Score score={score} max_score={index} />}
-      {all_tags.length === 0 && <CircularProgress variant="determinate" value={loading_progress} />}
-      {!playing && <Button variant="contained" disabled={all_tags.length === 0} onClick={start} id="start">Start</Button>}
-      {playing && selected_tags.length > 0 && !guess_to_show && <VideoPlayer
-        tag={selected_tags[index]}
-        current_video={current_video}
-        set_current_video={set_current_video}
-        play_next_tag={play_next} />}
-      {
-        guess_to_show &&
-        <GuessResultUI
-          guess_result={{
-            guess: guesses.get(guess_to_show),
-            correct_answer: guess_to_show.name,
-            is_correct: guess_matches(guesses.get(guess_to_show), guess_to_show),
-          }} />
-      }
-      {
-        playing && !guess_to_show &&
-        <GuessInput
-          on_guess_changed={set_guess}
-          on_guess_submitted={lock_in_guess}
-          all_tags={all_tags}
-        />
-      }
-    </React.Fragment>
-  );
-}
-
-const RESULT_DISPLAY_DURATION = 4_000;
-
-const normalize = (value: number) => value * 100 / RESULT_DISPLAY_DURATION;
-
-function guess_matches(guess: string | undefined, tag: Tag) {
-  return guess !== undefined && Matcher({guess, answer: tag.name});
-}
-
-function choose_random_tags(tags: Tag[]): Tag[] {
-  return popularity_list.map(({ max, min }) =>
-    sample(tags.filter(({ count }) => max >= count && count >= min))
-  ) as Tag[];
-}
-
-const popularity_list: Popularity[] = [
+const TAG_TIMER_DURATION = 30;
+const RESULT_DISPLAY_DURATION = 4;
+const LOADING_DURATION = 0.8;
+export const POPULARITY_LIST: Popularity[] = [
   { "max": 100000, "min": 500 },
   { "max": 100000, "min": 500 },
   { "max": 100000, "min": 500 },
@@ -200,5 +54,115 @@ const popularity_list: Popularity[] = [
   { "max": 25, "min": 1 },
   { "max": 1, "min": 1 },
 ];
+
+function choose_random_tags(tags: Tag[]): Tag[] {
+  return POPULARITY_LIST.map(({ max, min }) =>
+    sample(tags.filter(({ count }) => max >= count && count >= min))
+  ) as Tag[];
+}
+
+function score_to_show(index: number, guess_to_show: number | undefined) {
+  return guess_to_show !== undefined ?
+    index + 1 :
+    index;
+}
+
+function score(guesses: Guess[], index: number) {
+  let total = 0;
+
+  for (let i = 0; i < index; i++) {
+    if (guess_matches(guesses[i]).matches) {
+      total += 1;
+    }
+  }
+
+  return total;
+}
+
+export const useThunkDispatch = () => useDispatch<typeof store.dispatch>();
+
+function App() {
+  const {
+    guesses,
+    index,
+    videos,
+    guess_to_show,
+    playing,
+    tags,
+  } = useSelector((state: RootState) => state.app);
+  const dispatch = useThunkDispatch()
+
+  const [all_tags, set_all_tags] = useState<Tag[]>([]);
+  const [video_wrapper, set_video_wrapper] = useState<VideoWrapper | undefined>(undefined);
+
+  useEffect(() => {
+    fetch_all_tags().then(tags => {
+      set_all_tags(tags);
+      set_video_wrapper(new VideoWrapper(tags));
+    });
+  }, []);
+
+  return (
+    <React.Fragment>
+      {
+        guess_to_show !== undefined &&
+        <Timer
+          duration={RESULT_DISPLAY_DURATION}
+          on_time_over={() => dispatch(show_next_tag())}
+          className={"controls timer"}
+        />
+      }
+      {
+        playing &&
+          <Score
+            score={score(guesses, score_to_show(index, guess_to_show))}
+            max_score={score_to_show(index, guess_to_show)} />
+      }
+      {
+        all_tags.length === 0 &&
+        <Timer duration={LOADING_DURATION} />
+      }
+      {
+        !playing &&
+        <Button
+          variant="contained"
+          disabled={all_tags.length === 0}
+          onClick={() => dispatch(start(choose_random_tags(all_tags)))}
+          id="start">
+            Start
+        </Button>
+      }
+      {
+        playing && tags.length > 0 && guess_to_show === undefined && video_wrapper &&
+        <React.Fragment>
+          <Timer
+            duration={TAG_TIMER_DURATION}
+            on_time_over={() => dispatch(submit_guess())}
+            count_down={true}
+            show_emergency_color={true}
+            className={"controls timer"}
+          />
+          <VideoPlayer
+            tag={tags[index]}
+            video={videos[videos.length - 1]}
+            video_wrapper={video_wrapper}
+          />
+        </React.Fragment>
+      }
+      {
+        guess_to_show !== undefined &&
+        <GuessResultUI
+          guess_result={{
+            guess: guesses[guess_to_show]!,
+            match_result: guess_matches(guesses[guess_to_show]!),
+          }} />
+      }
+      {
+        playing && guess_to_show === undefined &&
+        <GuessInput all_tags={all_tags} />
+      }
+    </React.Fragment>
+  );
+}
 
 export default App;

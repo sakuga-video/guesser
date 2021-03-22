@@ -1,31 +1,26 @@
-import { Tag, TagType, Video } from "./App";
+import { Tag, TagType } from "./App";
 import { random } from "lodash";
 
 const API_URL = "/api/";
 
-type VideoResponse = {
+export type VideoResponse = {
     file_url: string,
     id: number,
+    tags: string,
 };
 
-type Page<Data> = {
+export type Page<Data> = {
     data: Data,
     page: number,
 }
 
-export async function fetch_tags() {
+export async function fetch_all_tags() {
     const response = await fetch(API_URL+'tag.json?limit=0&order=count&type='+TagType.COPYRIGHT);
-    const tags: Tag[] = (await response.json()).map((jsonTag: any) => ({
-      ambiguous: jsonTag.ambiguous,
-      count: jsonTag.count,
-      id: jsonTag.id,
-      name: jsonTag.name.replaceAll("_", " "),
-      type: jsonTag.type,
-    }));
+    const tags: Tag[] = (await response.json()).map(map_tag);
     return tags.filter(({ count }) => count > 0);
 }
 
-export async function fetch_video({ tag, page = undefined }: { tag: Tag, page?: number }): Promise<Page<Video>> {
+export async function fetch_video({ tag, page = undefined }: { tag: Tag, page?: number }): Promise<Page<VideoResponse>> {
     page = page ?? random(tag.count);
     const url = API_URL+'post.json?limit=1&page=' + page + '&tags=' + tag.name.replaceAll(" ", "_");
     const response = await fetch(url);
@@ -33,12 +28,8 @@ export async function fetch_video({ tag, page = undefined }: { tag: Tag, page?: 
 
     if (videoIsValid(videos[0])) {
         return {
-            data: {
-                url: videos[0].file_url,
-                id: videos[0].id,
-                tag: tag,
-            },
-            page
+            data: videos[0],
+            page,
         };
     } else {
         return fetch_video({
@@ -47,6 +38,14 @@ export async function fetch_video({ tag, page = undefined }: { tag: Tag, page?: 
         });
     }
 }
+
+const map_tag = (jsonTag: any): Tag => ({
+    ambiguous: jsonTag.ambiguous,
+    count: jsonTag.count,
+    id: jsonTag.id,
+    name: jsonTag.name.replaceAll("_", " "),
+    type: jsonTag.type,
+});
 
 export const increment = (page: number, tag: Tag) => (page + 1) % tag.count;
 
