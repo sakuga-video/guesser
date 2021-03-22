@@ -22,7 +22,7 @@ export async function fetch_all_tags() {
 
 export async function fetch_video({ tag, page = undefined }: { tag: Tag, page?: number }): Promise<Page<VideoResponse>> {
     page = page ?? random(tag.count);
-    const url = API_URL+'post.json?limit=1&page=' + page + '&tags=' + tag.name.replaceAll(" ", "_");
+    const url = API_URL+'post.json?limit=1&page=' + page + '&tags=' + tag.name.replaceAll(" ", "_") + " rating:safe";
     const response = await fetch(url);
     const videos: VideoResponse[] = await response.json();
 
