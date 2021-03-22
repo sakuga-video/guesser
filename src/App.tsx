@@ -61,13 +61,21 @@ function choose_random_tags(tags: Tag[]): Tag[] {
   ) as Tag[];
 }
 
-function score(guesses: Guess[]) {
+function score_to_show(index: number, guess_to_show: number | undefined) {
+  return guess_to_show !== undefined ?
+    index + 1 :
+    index;
+}
+
+function score(guesses: Guess[], index: number) {
   let total = 0;
-  guesses.forEach(guess => {
-    if (guess_matches(guess).matches) {
+
+  for (let i = 0; i < index; i++) {
+    if (guess_matches(guesses[i]).matches) {
       total += 1;
     }
-  })
+  }
+
   return total;
 }
 
@@ -105,7 +113,10 @@ function App() {
         />
       }
       {
-        playing && <Score score={score(guesses)} max_score={index} />
+        playing &&
+          <Score
+            score={score(guesses, score_to_show(index, guess_to_show))}
+            max_score={score_to_show(index, guess_to_show)} />
       }
       {
         all_tags.length === 0 &&
