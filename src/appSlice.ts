@@ -4,7 +4,7 @@ import { Guess } from './GuessMatcher';
 import { Video } from './VideoWrapper';
 
 interface AppState {
-  readonly videos: Video[],
+  readonly videos: Video[][],
   readonly guesses: Guess[],
   readonly index: number,
   readonly guess_to_show: number | undefined,
@@ -27,14 +27,17 @@ export const appSlice = createSlice({
   reducers: {
     change_video: (state, action: PayloadAction<Video>) => {
       const new_video = action.payload;
-      const guess = state.guesses[state.index]?.guess;
-      state.guesses[state.index] = { guess, answers: new_video.tags };
-      state.videos.push(new_video);
+      const index = state.index;
+      const guess = state.guesses[index]?.guess;
+      state.guesses[index] = { guess, answers: new_video.tags };
+      state.videos[index] ?
+        state.videos[index].push(new_video) :
+        state.videos[index] = [new_video];
     },
     submit_guess: state => {
-      let guesses = state.guesses;
-      let index = state.index;
-      const videos = state.videos;
+      const guesses = state.guesses;
+      const index = state.index;
+      const videos = state.videos[index];
     
       state.guess_to_show = index;
     
@@ -62,12 +65,14 @@ export const appSlice = createSlice({
     },
     change_guess: (state, action: PayloadAction<string>) => {
       const guess = action.payload;
-      const videos = state.videos;
       const index = state.index;
-      state.guesses[index] = {
+      const videos = state.videos[index];
+      if (videos) {
+        state.guesses[index] = {
           guess,
           answers: videos[videos.length - 1]?.tags ?? []
-      };
+        };
+      }
     },
   },
 });

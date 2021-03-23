@@ -7,6 +7,7 @@ export type VideoResponse = {
     file_url: string,
     id: number,
     tags: string,
+    preview_url: string,
 };
 
 export type Page<Data> = {
