@@ -2,6 +2,7 @@ body, html, #root {
   margin:0;
   padding:0;
   background:#000;
+  color: #eee;
   height: 100%;
   width: 100%;
   overflow-y: hidden;

@@ -20,6 +20,7 @@ class VideoWrapper {
             tags,
             url: video_response.file_url,
             id: video_response.id,
+            preview_url: video_response.preview_url,
         }
     }
 }
@@ -28,6 +29,7 @@ export type Video = {
     readonly url: string,
     readonly id: number,
     readonly tags: Tag[],
+    readonly preview_url: string,
 };
 
 export default VideoWrapper;

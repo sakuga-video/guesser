@@ -13,6 +13,7 @@ import VideoWrapper from './VideoWrapper';
 import { RootState, store } from './app/store';
 import { show_next_tag, start, submit_guess } from './appSlice';
 import Timer from './Timer';
+import GameSummary, { Round } from './GameSummary';
 
 export enum TagType {
   GENERAL = 0,
@@ -55,7 +56,7 @@ export const POPULARITY_LIST: Popularity[] = [
   { "max": 1, "min": 1 },
 ];
 
-function choose_random_tags(tags: Tag[]): Tag[] {
+export function choose_random_tags(tags: Tag[]): Tag[] {
   return POPULARITY_LIST.map(({ max, min }) =>
     sample(tags.filter(({ count }) => max >= count && count >= min))
   ) as Tag[];
@@ -90,7 +91,20 @@ function App() {
     playing,
     tags,
   } = useSelector((state: RootState) => state.app);
-  const dispatch = useThunkDispatch()
+  const rounds: Round[] = useSelector((state: RootState) => {
+    const app = state.app;
+    const number_of_rounds = app.tags.length;
+    const rounds = [];
+    for (let i = 0; i < number_of_rounds; i++) {
+      rounds.push({
+        tag: app.tags[i],
+        videos: app.videos[i],
+        guess: app.guesses[i],
+      });
+    }
+    return rounds;
+  });
+  const dispatch = useThunkDispatch();
 
   const [all_tags, set_all_tags] = useState<Tag[]>([]);
   const [video_wrapper, set_video_wrapper] = useState<VideoWrapper | undefined>(undefined);
@@ -124,6 +138,7 @@ function App() {
       }
       {
         !playing &&
+        guesses.length === 0 &&
         <Button
           variant="contained"
           disabled={all_tags.length === 0}
@@ -131,6 +146,11 @@ function App() {
           id="start">
             Start
         </Button>
+      }
+      {
+        !playing &&
+        guesses.length > 0 &&
+        <GameSummary rounds={rounds} all_tags={all_tags} />
       }
       {
         playing && tags.length > 0 && guess_to_show === undefined && video_wrapper &&
@@ -144,7 +164,7 @@ function App() {
           />
           <VideoPlayer
             tag={tags[index]}
-            video={videos[videos.length - 1]}
+            video={videos[index] ? videos[index][videos[index].length - 1] : undefined}
             video_wrapper={video_wrapper}
           />
         </React.Fragment>
