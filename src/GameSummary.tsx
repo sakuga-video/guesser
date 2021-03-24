@@ -16,7 +16,6 @@ export type Round = {
 }
 
 const SAKUGABOORU_URL = "https://www.sakugabooru.com/post";
-const SAKUGABOORU_VIDEO_URL = SAKUGABOORU_URL + "/show/";
 const SAKUGABOORU_TAG_URL = SAKUGABOORU_URL + "?tags=";
 
 const render_guess = (guess: Guess) => {
@@ -25,16 +24,6 @@ const render_guess = (guess: Guess) => {
     }
     return "\"" + guess.guess + "\" " + (Matches(guess).matches ? "🎉 was correct 🎊" : "was incorrect");
 }
-
-const video_thumbnails = (videos: Video[]) =>
-    videos.map(video =>
-        <li key={video.id}>
-            <a href={SAKUGABOORU_VIDEO_URL + video.id}>
-                <img className="thumbnail" alt={"Thumbnail preview of " + video.tags[0].name} src={video.preview_url} />
-            </a>
-        </li>
-    )
-
 
 const useStyles = makeStyles({
     root: {
