@@ -1,10 +1,10 @@
-import { Button } from "@material-ui/core";
+import { Button, Card, CardActionArea, CardContent, CardMedia, Container, Grid, makeStyles, Typography } from "@material-ui/core";
 import { choose_random_tags, Tag, useThunkDispatch } from "./App";
 import { start } from "./appSlice";
 import Matches, { Guess } from "./GuessMatcher";
 import { Video } from "./VideoWrapper";
 
-type Props = {
+export type GameSummaryProps = {
     rounds: Round[],
     all_tags: Tag[],
 };
@@ -16,47 +16,65 @@ export type Round = {
 }
 
 const SAKUGABOORU_URL = "https://www.sakugabooru.com/post";
-const SAKUGABOORU_VIDEO_URL = SAKUGABOORU_URL + "/show/";
 const SAKUGABOORU_TAG_URL = SAKUGABOORU_URL + "?tags=";
 
 const render_guess = (guess: Guess) => {
     if (!guess.guess) {
         return "No guess";
     }
-    return "Guess " + guess.guess + " " + (Matches(guess).matches ? "🎉 was correct 🎊" : "was incorrect");
+    return "\"" + guess.guess + "\" " + (Matches(guess).matches ? "🎉 was correct 🎊" : "was incorrect");
 }
 
-const video_thumbnails = (videos: Video[]) =>
-    videos.map(video =>
-        <li key={video.id}>
-            <a href={SAKUGABOORU_VIDEO_URL + video.id}>
-                <img className="thumbnail" alt={"Thumbnail preview of " + video.tags[0]} src={video.preview_url} />
-            </a>
-        </li>
-    )
+const useStyles = makeStyles({
+    root: {
+        minHeight: 250,
+    }
+});
 
-const round_summary = (round: Round, index: number) => {
-    return (
-        <li key={index}>
-            <h1 className="show-title"><a href={SAKUGABOORU_TAG_URL + round.tag.name.replaceAll(" ", "_")}>{round.tag.name}</a></h1>
-            <p className="guess">{render_guess(round.guess)}</p>
-            <ol className="video-thumbnails">
-                {video_thumbnails(round.videos)}
-            </ol>
-        </li>
-    );
-}
-
-const GameSummary = ({rounds, all_tags}: Props) => {
+const GameSummary = ({rounds, all_tags}: GameSummaryProps) => {
     const dispatch = useThunkDispatch();
+    const classes = useStyles();
+
+    const round_summary = (round: Round, index: number) => {
+        return (
+            <Grid key={index} item className="round-summary" xs={12} sm={6} md={4}>
+                <Card classes={classes}>
+                    <CardActionArea href={SAKUGABOORU_TAG_URL + round.tag.name.replaceAll(" ", "_")}>
+                        <CardMedia
+                            component="img"
+                            title={"Image thumbnail of a clip from " + round.videos[0].tags[0].name}
+                            alt={"Image thumbnail of a clip from " + round.videos[0].tags[0].name}
+                            image={round.videos[0].preview_url}
+                        />
+                        <CardContent>
+                            <Typography gutterBottom variant="h5" component="h2">
+                                {round.tag.name}
+                            </Typography>
+                            <Typography variant="body2" component="p">
+                                {render_guess(round.guess)}
+                            </Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+            </Grid>
+        );
+    }    
 
     return (
-        <div id="game-summary">
-            <ol id="round-summary">
+        <Container>
+            <Grid container spacing={2}>
                 {rounds.map(round_summary)}
-            </ol>
-            <Button variant="contained" onClick={() => dispatch(start(choose_random_tags(all_tags)))}>Restart</Button>
-        </div>
+            </Grid>
+            <div id="play-again">
+                <Button
+                    variant="contained"
+                    onClick={() => dispatch(start(choose_random_tags(all_tags)))}
+                    color="primary"
+                >
+                        Play Again
+                </Button>
+            </div>
+        </Container>
     )
 }
 

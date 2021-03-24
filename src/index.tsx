@@ -9,7 +9,7 @@ import { lightBlue, red } from '@material-ui/core/colors';
 import { store } from './app/store';
 import { Provider } from 'react-redux';
 
-const dark_theme = createMuiTheme({
+export const dark_theme = createMuiTheme({
   palette: {
     type: 'dark',
     primary: lightBlue,
