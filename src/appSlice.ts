@@ -38,6 +38,12 @@ export const appSlice = createSlice({
       const guesses = state.guesses;
       const index = state.index;
       const videos = state.videos[index];
+
+      // someone tried to submit a guess before
+      // the video loaded. just ignore it
+      if (videos === undefined) {
+        return;
+      }
     
       state.guess_to_show = index;
     

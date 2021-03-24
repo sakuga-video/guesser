@@ -155,6 +155,7 @@ function App() {
       {
         playing && tags.length > 0 && guess_to_show === undefined && video_wrapper &&
         <React.Fragment>
+          {videos[index] &&
           <Timer
             duration={TAG_TIMER_DURATION}
             on_time_over={() => dispatch(submit_guess())}
@@ -162,6 +163,7 @@ function App() {
             show_emergency_color={true}
             className={"controls timer"}
           />
+          }
           <VideoPlayer
             tag={tags[index]}
             video={videos[index] ? videos[index][videos[index].length - 1] : undefined}
