@@ -88,3 +88,9 @@ video::-webkit-media-controls {
   margin-top:10px;
   margin-right:10px;
 }
+
+#play-again {
+  margin: 1em;
+  display:flex;
+  justify-content: center;
+}

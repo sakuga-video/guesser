@@ -1,5 +1,4 @@
-import { Button, Card, CardActionArea, CardContent, CardMedia, Container, Grid, Paper, Typography } from "@material-ui/core";
-import React from "react";
+import { Button, Card, CardActionArea, CardContent, CardMedia, Container, Grid, makeStyles, Typography } from "@material-ui/core";
 import { choose_random_tags, Tag, useThunkDispatch } from "./App";
 import { start } from "./appSlice";
 import Matches, { Guess } from "./GuessMatcher";
@@ -24,7 +23,7 @@ const render_guess = (guess: Guess) => {
     if (!guess.guess) {
         return "No guess";
     }
-    return "Guess \"" + guess.guess + "\" " + (Matches(guess).matches ? "🎉 was correct 🎊" : "was incorrect");
+    return "\"" + guess.guess + "\" " + (Matches(guess).matches ? "🎉 was correct 🎊" : "was incorrect");
 }
 
 const video_thumbnails = (videos: Video[]) =>
@@ -36,40 +35,56 @@ const video_thumbnails = (videos: Video[]) =>
         </li>
     )
 
-const round_summary = (round: Round, index: number) => {
-    return (
-        <Grid key={index} item className="round-summary">
-            <Card>
-                <CardActionArea>
-                    <CardMedia
-                        component="img"
-                        title={"Image thumbnail of a clip from " + round.videos[0].tags[0].name}
-                        alt={"Image thumbnail of a clip from " + round.videos[0].tags[0].name}
-                        image={round.videos[0].preview_url}
-                    />
-                    <CardContent>
-                        <Typography gutterBottom variant="h5" component="h2">
-                            <a href={SAKUGABOORU_TAG_URL + round.tag.name.replaceAll(" ", "_")}>{round.tag.name}</a>
-                        </Typography>
-                        <Typography variant="body2" component="p">
-                            {render_guess(round.guess)}
-                        </Typography>
-                    </CardContent>
-                </CardActionArea>
-            </Card>
-        </Grid>
-    );
-}
+
+const useStyles = makeStyles({
+    root: {
+        minHeight: 250,
+    }
+});
 
 const GameSummary = ({rounds, all_tags}: GameSummaryProps) => {
     const dispatch = useThunkDispatch();
+    const classes = useStyles();
+
+    const round_summary = (round: Round, index: number) => {
+        return (
+            <Grid key={index} item className="round-summary" xs={12} sm={6} md={4}>
+                <Card classes={classes}>
+                    <CardActionArea href={SAKUGABOORU_TAG_URL + round.tag.name.replaceAll(" ", "_")}>
+                        <CardMedia
+                            component="img"
+                            title={"Image thumbnail of a clip from " + round.videos[0].tags[0].name}
+                            alt={"Image thumbnail of a clip from " + round.videos[0].tags[0].name}
+                            image={round.videos[0].preview_url}
+                        />
+                        <CardContent>
+                            <Typography gutterBottom variant="h5" component="h2">
+                                {round.tag.name}
+                            </Typography>
+                            <Typography variant="body2" component="p">
+                                {render_guess(round.guess)}
+                            </Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+            </Grid>
+        );
+    }    
 
     return (
-        <Container id="game-summary" maxWidth="lg">
+        <Container>
             <Grid container spacing={2}>
                 {rounds.map(round_summary)}
             </Grid>
-            <Button variant="contained" onClick={() => dispatch(start(choose_random_tags(all_tags)))}>Play Again</Button>
+            <div id="play-again">
+                <Button
+                    variant="contained"
+                    onClick={() => dispatch(start(choose_random_tags(all_tags)))}
+                    color="primary"
+                >
+                        Play Again
+                </Button>
+            </div>
         </Container>
     )
 }
