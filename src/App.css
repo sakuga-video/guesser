@@ -5,7 +5,6 @@ body, html, #root {
   color: #eee;
   height: 100%;
   width: 100%;
-  overflow-y: hidden;
   font: 15px 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
