@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/guesser/static/css/main.ee77282f.chunk.css",
+    "main.css": "/guesser/static/css/main.0df25170.chunk.css",
     "main.js": "/guesser/static/js/main.7c516fec.chunk.js",
     "main.js.map": "/guesser/static/js/main.7c516fec.chunk.js.map",
     "runtime-main.js": "/guesser/static/js/runtime-main.a0b47e31.js",
@@ -10,13 +10,13 @@
     "static/js/3.fc3fc1ff.chunk.js": "/guesser/static/js/3.fc3fc1ff.chunk.js",
     "static/js/3.fc3fc1ff.chunk.js.map": "/guesser/static/js/3.fc3fc1ff.chunk.js.map",
     "index.html": "/guesser/index.html",
-    "static/css/main.ee77282f.chunk.css.map": "/guesser/static/css/main.ee77282f.chunk.css.map",
+    "static/css/main.0df25170.chunk.css.map": "/guesser/static/css/main.0df25170.chunk.css.map",
     "static/js/2.3990e5ed.chunk.js.LICENSE.txt": "/guesser/static/js/2.3990e5ed.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.a0b47e31.js",
     "static/js/2.3990e5ed.chunk.js",
-    "static/css/main.ee77282f.chunk.css",
+    "static/css/main.0df25170.chunk.css",
     "static/js/main.7c516fec.chunk.js"
   ]
 }
