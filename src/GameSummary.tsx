@@ -19,10 +19,13 @@ const SAKUGABOORU_URL = "https://www.sakugabooru.com/post";
 const SAKUGABOORU_TAG_URL = SAKUGABOORU_URL + "?tags=";
 
 const render_guess = (guess: Guess) => {
-    if (!guess.guess) {
-        return "No guess";
-    }
-    return "\"" + guess.guess + "\" " + (Matches(guess).matches ? "🎉 was correct 🎊" : "was incorrect");
+    const match_result = Matches(guess);
+    const guess_string = "\"" + guess.guess + "\" ";
+    return {
+        missing: "No guess",
+        correct: guess_string + "🎉 was correct 🎊",
+        incorrect: guess_string + "was incorrect",
+    }[match_result.result]
 }
 
 const useStyles = makeStyles({

@@ -1,9 +1,9 @@
 import { Tag, useThunkDispatch } from './App';
-import { Guess, MatchResult } from './GuessMatcher';
 import { sortBy } from 'lodash';
 import Timer from './Timer';
 import { show_next_tag } from './appSlice';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Paper } from '@material-ui/core';
+import { MatchResult } from './GuessMatcher';
 
 const RESULT_DISPLAY_DURATION = 4;
 
@@ -11,9 +11,19 @@ const useStyles = makeStyles({
     timer: {
       width: "100%",
     },
+    root: {
+        flexBasis: "400px",
+    },
 });
 
-const GuessResultUI = ({guess_result}: {guess_result: GuessResult }) => {
+export type GuessResult = "correct" | "missing" | "incorrect";
+
+export interface GuessResultUIProps extends MatchResult {
+    readonly guess?: string,
+    readonly answers: Tag[],
+}
+
+const GuessResultUI = ({guess, answers, closest_answer, result, is_exact}: GuessResultUIProps) => {
     const dispatch = useThunkDispatch();
     const classes = useStyles();
 
@@ -25,37 +35,19 @@ const GuessResultUI = ({guess_result}: {guess_result: GuessResult }) => {
             className={classes.timer}
         />
     );
-
-    if (guess_result.match_result.matches && guess_result.guess.guess) {
-        return (
-            <div id="guess-result" className="controls correct">
-                <p>{guess_result.guess.guess}</p>
-                {
-                    !guess_result.match_result.exact &&
-                    <p>({guess_result.match_result.closest})</p>
-                }
-                <h1>🎉 is correct 🎊</h1>
-                {timer}
-            </div>
-        )
-    } else if (guess_result.guess.guess) {
-        return (
-            <div id="guess-result" className="controls wrong">
-                <p id="incorrect-guess">{guess_result.guess.guess}</p>
-                <h1>is incorrect</h1>
-                {answer_ui(guess_result.guess.answers)}
-                {timer}
-            </div>
-        );
-    } else {
-        return (
-            <div id="guess-result" className="controls wrong">
-                <h1>No guess</h1>
-                {answer_ui(guess_result.guess.answers)}
-                {timer}
-            </div>
-        );
-    }
+    return (
+        <Paper id="guess-result" className={classes.root}>
+            {result !== "missing" && <p>{guess}</p>}
+            {result === "correct" && !is_exact && <p>({closest_answer})</p> }
+            <h1>{{
+                correct: "🎉 is correct 🎊",
+                incorrect: "is incorrect",
+                missing: "No guess",
+            }[result]}</h1>
+            {result !== "correct" && answer_ui(answers)}
+            {timer}
+        </Paper>
+    )
 }
 
 const answer_ui = (answers: Tag[]) => {
@@ -64,11 +56,6 @@ const answer_ui = (answers: Tag[]) => {
     } else {
         return null;
     }
-}
-
-export type GuessResult = {
-    guess: Guess,
-    match_result: MatchResult,
 }
 
 export default GuessResultUI;

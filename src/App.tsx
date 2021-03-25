@@ -23,11 +23,9 @@ export enum TagType {
 }
 
 export type Tag = {
-  readonly ambiguous: boolean,
   readonly count: number,
   readonly id: number,
   readonly name: string,
-  readonly type: TagType,
 };
 
 type Popularity = { "max": number, "min": number };
@@ -64,7 +62,7 @@ function score(guesses: Guess[], index: number) {
   let total = 0;
 
   for (let i = 0; i < index; i++) {
-    if (guess_matches(guesses[i]).matches) {
+    if (guess_matches(guesses[i]).result === "correct") {
       total += 1;
     }
   }
@@ -95,6 +93,12 @@ function App() {
       });
     }
     return rounds;
+  });
+  const match_result = useSelector((state: RootState) => {
+    const guess_to_show = state.app.guess_to_show;
+    return guess_to_show === undefined ?
+      undefined :
+      guess_matches(state.app.guesses[guess_to_show]!);
   });
   const dispatch = useThunkDispatch();
 
@@ -150,11 +154,11 @@ function App() {
       }
       {
         guess_to_show !== undefined &&
+        match_result !== undefined &&
         <GuessResultUI
-          guess_result={{
-            guess: guesses[guess_to_show]!,
-            match_result: guess_matches(guesses[guess_to_show]!),
-          }} />
+          {...match_result}
+          {...guesses[guess_to_show]}
+        />
       }
     </div>
   );

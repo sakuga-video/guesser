@@ -41,11 +41,9 @@ export async function fetch_video({ tag, page = undefined }: { tag: Tag, page?: 
 }
 
 const map_tag = (jsonTag: any): Tag => ({
-    ambiguous: jsonTag.ambiguous,
     count: jsonTag.count,
     id: jsonTag.id,
     name: jsonTag.name.replaceAll("_", " "),
-    type: jsonTag.type,
 });
 
 export const increment = (page: number, tag: Tag) => (page + 1) % tag.count;
