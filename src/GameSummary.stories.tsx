@@ -43,6 +43,6 @@ const CORRECT_ROUND = {
 
 export const Guesses = Template.bind({});
 Guesses.args = {
-    rounds: Array(5).fill(INCORRECT_ROUND).concat(Array(5).fill(CORRECT_ROUND)),
-    all_tags: Array(10).fill(EIZOUKEN_TAG),
+    rounds: Array(5).fill(INCORRECT_ROUND).concat(Array(12).fill(CORRECT_ROUND)),
+    all_tags: Array(17).fill(EIZOUKEN_TAG),
 };

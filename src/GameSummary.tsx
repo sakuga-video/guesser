@@ -39,7 +39,7 @@ const GameSummary = ({rounds, all_tags}: GameSummaryProps) => {
         return (
             <Grid key={index} item className="round-summary" xs={12} sm={6} md={4}>
                 <Card classes={classes}>
-                    <CardActionArea href={SAKUGABOORU_TAG_URL + round.tag.name.replaceAll(" ", "_")}>
+                    <CardActionArea href={SAKUGABOORU_TAG_URL + round.tag.name.replaceAll(" ", "_")} target="_blank">
                         <CardMedia
                             component="img"
                             title={"Image thumbnail of a clip from " + round.videos[0].tags[0].name}

@@ -1,13 +1,8 @@
-body, html, #root {
+body, html, #root, #game {
   margin:0;
   padding:0;
-  background:#000;
-  color: #eee;
   height: 100%;
   width: 100%;
-  font: 15px 'Open Sans', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 #title {
@@ -22,11 +17,10 @@ body, html, #root {
   z-index: 2147483647;
 }
 
-#root {
+#game {
   display: flex;
   align-items: center;
   justify-content: center;
-  height:100%;
 }
 
 video {
@@ -75,9 +69,12 @@ video::-webkit-media-controls {
   bottom: 15px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(2, 2, 2, .7);
   position: fixed;
   display: flex;
+}
+
+#guess-input {
+  background: rgba(2, 2, 2, .7);
 }
 
 .timer {
@@ -86,6 +83,8 @@ video::-webkit-media-controls {
   border-radius:100%;
   margin-top:10px;
   margin-right:10px;
+  z-index: 2147483647;
+  background: rgba(2, 2, 2, .7);
 }
 
 #play-again {

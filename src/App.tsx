@@ -11,7 +11,7 @@ import guess_matches, { Guess } from './GuessMatcher';
 import { fetch_all_tags } from './SakugaAPI';
 import VideoWrapper from './VideoWrapper';
 import { RootState, store } from './app/store';
-import { show_next_tag, start, submit_guess } from './appSlice';
+import { start } from './appSlice';
 import Timer from './Timer';
 import GameSummary, { Round } from './GameSummary';
 
@@ -32,24 +32,16 @@ export type Tag = {
 
 type Popularity = { "max": number, "min": number };
 
-const TAG_TIMER_DURATION = 30;
-const RESULT_DISPLAY_DURATION = 4;
 const LOADING_DURATION = 0.8;
 export const POPULARITY_LIST: Popularity[] = [
   { "max": 100000, "min": 500 },
   { "max": 100000, "min": 500 },
   { "max": 100000, "min": 500 },
-  { "max": 100000, "min": 500 },
-  { "max": 100000, "min": 500 },
   { "max": 500, "min": 100 },
   { "max": 500, "min": 100 },
   { "max": 500, "min": 100 },
   { "max": 500, "min": 100 },
   { "max": 500, "min": 100 },
-  { "max": 500, "min": 100 },
-  { "max": 500, "min": 100 },
-  { "max": 100, "min": 25 },
-  { "max": 100, "min": 25 },
   { "max": 100, "min": 25 },
   { "max": 25, "min": 1 },
   { "max": 25, "min": 1 },
@@ -116,16 +108,12 @@ function App() {
     });
   }, []);
 
+  if (!playing && guesses.length > 0) {
+    return <GameSummary rounds={rounds} all_tags={all_tags} />;
+  }
+
   return (
-    <React.Fragment>
-      {
-        guess_to_show !== undefined &&
-        <Timer
-          duration={RESULT_DISPLAY_DURATION}
-          on_time_over={() => dispatch(show_next_tag())}
-          className={"controls timer"}
-        />
-      }
+    <div id="game">
       {
         playing &&
           <Score
@@ -139,6 +127,7 @@ function App() {
       {
         !playing &&
         guesses.length === 0 &&
+        all_tags.length > 0 &&
         <Button
           variant="contained"
           disabled={all_tags.length === 0}
@@ -148,27 +137,15 @@ function App() {
         </Button>
       }
       {
-        !playing &&
-        guesses.length > 0 &&
-        <GameSummary rounds={rounds} all_tags={all_tags} />
-      }
-      {
         playing && tags.length > 0 && guess_to_show === undefined && video_wrapper &&
         <React.Fragment>
-          {videos[index] &&
-          <Timer
-            duration={TAG_TIMER_DURATION}
-            on_time_over={() => dispatch(submit_guess())}
-            count_down={true}
-            show_emergency_color={true}
-            className={"controls timer"}
-          />
-          }
           <VideoPlayer
             tag={tags[index]}
             video={videos[index] ? videos[index][videos[index].length - 1] : undefined}
             video_wrapper={video_wrapper}
           />
+
+          {videos[index] && <GuessInput all_tags={all_tags} />}
         </React.Fragment>
       }
       {
@@ -179,11 +156,7 @@ function App() {
             match_result: guess_matches(guesses[guess_to_show]!),
           }} />
       }
-      {
-        playing && guess_to_show === undefined &&
-        <GuessInput all_tags={all_tags} />
-      }
-    </React.Fragment>
+    </div>
   );
 }
 

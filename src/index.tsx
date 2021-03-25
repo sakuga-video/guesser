@@ -8,6 +8,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { lightBlue, red } from '@material-ui/core/colors';
 import { store } from './app/store';
 import { Provider } from 'react-redux';
+import { CssBaseline } from '@material-ui/core';
 
 export const dark_theme = createMuiTheme({
   palette: {
@@ -20,6 +21,7 @@ export const dark_theme = createMuiTheme({
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={dark_theme}>
+      <CssBaseline />
       <Provider store={store}>
         <App />
       </Provider>
