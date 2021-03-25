@@ -9,7 +9,7 @@ class VideoWrapper {
         this.tags_by_name = Map(all_tags.map(tag => [tag.name, tag]));
     }
 
-    wrap(video_response: VideoResponse): Video {
+    readonly wrap = (video_response: VideoResponse): Video => {
         const tags = video_response.tags
             .split(" ")
             .map(tag_string => tag_string.replaceAll("_", " "))
