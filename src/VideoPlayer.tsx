@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { CircularProgress } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
 import { Tag, useThunkDispatch } from "./App";
 import { change_video } from "./appSlice";
 import { fetch_random_video } from "./SakugaAPI";
@@ -12,6 +13,7 @@ type Props = {
 
 const VideoPlayer = ({ tag, video, video_wrapper }: Props) => {
     const dispatch = useThunkDispatch();
+    const [loading, set_loading] = useState(true);
 
     useEffect(() => {
         let mounted = true;
@@ -32,14 +34,19 @@ const VideoPlayer = ({ tag, video, video_wrapper }: Props) => {
     }
 
     return (
+        <React.Fragment>
+        {(!video || loading) && <CircularProgress className="video-loading" />}
         <video
             muted
+            onWaiting={() => set_loading(true)}
+            onCanPlay={() => set_loading(false)}
             preload="auto"
             autoPlay
             src={video?.url}
-            onEnded={play_next_video}
+            onEnded={() => {set_loading(true); play_next_video()}}
         />
-    )
+        </React.Fragment>
+    );
 }
 
 export default VideoPlayer;

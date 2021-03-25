@@ -64,7 +64,7 @@ video::-webkit-media-controls {
   background: rgba(2, 2, 2, .7);
 }
 
-.timer {
+.timer, video-loading {
   right: 0%;
   top: 0%;
   border-radius:100%;
@@ -72,6 +72,10 @@ video::-webkit-media-controls {
   margin-right:10px;
   z-index: 2147483647;
   background: rgba(2, 2, 2, .7);
+}
+
+.video-loading {
+  position: fixed;
 }
 
 #play-again {
