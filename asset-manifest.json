@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/guesser/static/css/main.73e4844a.chunk.css",
-    "main.js": "/guesser/static/js/main.535227e8.chunk.js",
-    "main.js.map": "/guesser/static/js/main.535227e8.chunk.js.map",
-    "runtime-main.js": "/guesser/static/js/runtime-main.82027bf0.js",
-    "runtime-main.js.map": "/guesser/static/js/runtime-main.82027bf0.js.map",
-    "static/js/2.2de7bd20.chunk.js": "/guesser/static/js/2.2de7bd20.chunk.js",
-    "static/js/2.2de7bd20.chunk.js.map": "/guesser/static/js/2.2de7bd20.chunk.js.map",
-    "static/js/3.92e9c12c.chunk.js": "/guesser/static/js/3.92e9c12c.chunk.js",
-    "static/js/3.92e9c12c.chunk.js.map": "/guesser/static/js/3.92e9c12c.chunk.js.map",
+    "main.js": "/guesser/static/js/main.d3dd2b3a.chunk.js",
+    "main.js.map": "/guesser/static/js/main.d3dd2b3a.chunk.js.map",
+    "runtime-main.js": "/guesser/static/js/runtime-main.c8a73380.js",
+    "runtime-main.js.map": "/guesser/static/js/runtime-main.c8a73380.js.map",
+    "static/js/2.4f9742e0.chunk.js": "/guesser/static/js/2.4f9742e0.chunk.js",
+    "static/js/2.4f9742e0.chunk.js.map": "/guesser/static/js/2.4f9742e0.chunk.js.map",
+    "static/js/3.d1f5b131.chunk.js": "/guesser/static/js/3.d1f5b131.chunk.js",
+    "static/js/3.d1f5b131.chunk.js.map": "/guesser/static/js/3.d1f5b131.chunk.js.map",
     "index.html": "/guesser/index.html",
     "static/css/main.73e4844a.chunk.css.map": "/guesser/static/css/main.73e4844a.chunk.css.map",
-    "static/js/2.2de7bd20.chunk.js.LICENSE.txt": "/guesser/static/js/2.2de7bd20.chunk.js.LICENSE.txt"
+    "static/js/2.4f9742e0.chunk.js.LICENSE.txt": "/guesser/static/js/2.4f9742e0.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.82027bf0.js",
-    "static/js/2.2de7bd20.chunk.js",
+    "static/js/runtime-main.c8a73380.js",
+    "static/js/2.4f9742e0.chunk.js",
     "static/css/main.73e4844a.chunk.css",
-    "static/js/main.535227e8.chunk.js"
+    "static/js/main.d3dd2b3a.chunk.js"
   ]
 }
