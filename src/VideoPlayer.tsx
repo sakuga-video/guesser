@@ -52,6 +52,7 @@ const VideoPlayer = ({ tag, videos, video_wrapper }: Props) => {
             preload="auto"
             autoPlay
             loop={videos.length === 1}
+            onError={play_next_video}
             src={videos[index]?.url}
             onEnded={() => {console.log("video ended"); set_loading(true); play_next_video()}}
         />
