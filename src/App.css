@@ -83,3 +83,10 @@ video::-webkit-media-controls {
   display:flex;
   justify-content: center;
 }
+
+.progress {
+  position:absolute;
+  left:0;
+  z-index: 100000;
+  max-width: 200px;
+}
