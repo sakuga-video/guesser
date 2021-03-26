@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { POPULARITY_LIST, Tag } from './App';
+import { Tag } from './App';
 import { Guess } from './GuessMatcher';
 import { Video } from './VideoWrapper';
 
@@ -25,14 +25,18 @@ export const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
-    change_video: (state, action: PayloadAction<Video>) => {
-      const new_video = action.payload;
-      const index = state.index;
-      const guess = state.guesses[index]?.guess;
-      state.guesses[index] = { guess, answers: new_video.tags };
-      state.videos[index] ?
-        state.videos[index].push(new_video) :
-        state.videos[index] = [new_video];
+    mark_played: (state, action: PayloadAction<number>) => {
+      const video_index = action.payload;
+      const tag_index = state.index;
+      const guess = state.guesses[tag_index]?.guess;
+      const videos = state.videos[tag_index];
+      const playing_video = videos[video_index];
+
+      state.guesses[tag_index] = { guess, answers: playing_video.tags };
+      playing_video.played = true;
+    },
+    set_videos: (state, action: PayloadAction<Video[]>) => {
+      state.videos[state.index] = action.payload;
     },
     submit_guess: state => {
       const guesses = state.guesses;
@@ -41,7 +45,7 @@ export const appSlice = createSlice({
 
       // someone tried to submit a guess before
       // the video loaded. just ignore it
-      if (videos === undefined) {
+      if (videos === undefined || !videos[0]?.played) {
         return;
       }
     
@@ -55,7 +59,7 @@ export const appSlice = createSlice({
     },
     show_next_tag: state => {
       const index = state.index;
-      if ((index + 1) < POPULARITY_LIST.length) {
+      if ((index + 1) < state.tags.length) {
         state.index = index + 1;
       } else {
         state.index = 0;
@@ -66,6 +70,7 @@ export const appSlice = createSlice({
     start: (state, action: PayloadAction<Tag[]>) => {
       state.index = 0;
       state.guesses = [];
+      state.videos = [];
       state.playing = true;
       state.tags = action.payload;
     },
@@ -80,15 +85,24 @@ export const appSlice = createSlice({
         };
       }
     },
+    skip_tag: state => {
+      state.tags.splice(state.index, 1);
+      if ((state.index + 1) >= state.tags.length) {
+        state.index = 0;
+        state.playing = false;
+      }
+    },
   },
 });
 
 export const {
-  change_video,
+  mark_played,
   show_next_tag,
   start,
   submit_guess,
-  change_guess
+  change_guess,
+  skip_tag,
+  set_videos,
 } = appSlice.actions;
 
 export default appSlice.reducer;

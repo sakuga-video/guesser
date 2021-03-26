@@ -88,7 +88,7 @@ function App() {
     for (let i = 0; i < number_of_rounds; i++) {
       rounds.push({
         tag: app.tags[i],
-        videos: app.videos[i],
+        videos: app.videos[i]?.filter(video => video.played),
         guess: app.guesses[i],
       });
     }
@@ -145,7 +145,7 @@ function App() {
         <React.Fragment>
           <VideoPlayer
             tag={tags[index]}
-            video={videos[index] ? videos[index][videos[index].length - 1] : undefined}
+            videos={videos[index] ?? []}
             video_wrapper={video_wrapper}
           />
 

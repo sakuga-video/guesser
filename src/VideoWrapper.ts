@@ -30,6 +30,7 @@ export type Video = {
     readonly id: number,
     readonly tags: Tag[],
     readonly preview_url: string,
+    readonly played?: boolean,
 };
 
 export default VideoWrapper;

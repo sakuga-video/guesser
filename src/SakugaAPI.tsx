@@ -15,11 +15,10 @@ export async function fetch_all_tags() {
     return tags.filter(({ count }) => count > 0);
 }
 
-export async function fetch_random_video(tag: Tag): Promise<VideoResponse> {
-    const url = API_URL+'post.json?limit=1&tags=rating:safe order:random ext:mp4,webm ' + tag.name.replaceAll(" ", "_");
+export async function fetch_random_videos(tag: Tag, limit = 8): Promise<VideoResponse[]> {
+    const url = API_URL+'post.json?tags=rating:safe order:random ext:mp4,webm ' + tag.name.replaceAll(" ", "_") + "&limit=" + limit;
     const response = await fetch(url);
-    const video: VideoResponse = (await response.json())[0];
-    return video;
+    return await response.json();
 }
 
 const map_tag = (jsonTag: any): Tag => ({
