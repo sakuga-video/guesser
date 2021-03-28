@@ -1,8 +1,9 @@
 import { Button, Card, CardActionArea, CardContent, CardMedia, Container, Grid, makeStyles, Typography } from "@material-ui/core";
-import { choose_random_tags, Tag, useThunkDispatch } from "./App";
+import { Tag, useThunkDispatch } from "./App";
 import { start } from "./appSlice";
 import Matches, { Guess } from "./GuessMatcher";
 import { Video } from "./VideoWrapper";
+import { choose_random_tags } from './StartButton';
 
 export type GameSummaryProps = {
     rounds: Round[],

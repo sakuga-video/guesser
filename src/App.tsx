@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import sample from 'lodash/sample';
 import './App.css';
 import GuessInput from './GuessInput';
 import VideoPlayer from './VideoPlayer';
-import Button from '@material-ui/core/Button';
 import GuessResultUI from './GuessResultUI';
 import Score from './Score';
 import guess_matches, { Guess } from './GuessMatcher';
 import { fetch_all_tags } from './SakugaAPI';
 import VideoWrapper from './VideoWrapper';
 import { RootState, store } from './app/store';
-import { start } from './appSlice';
-import Timer from './Timer';
 import GameSummary, { Round } from './GameSummary';
+import StartButton from './StartButton';
 
 export enum TagType {
   GENERAL = 0,
@@ -27,30 +24,6 @@ export type Tag = {
   readonly id: number,
   readonly name: string,
 };
-
-type Popularity = { "max": number, "min": number };
-
-const LOADING_DURATION = 0.8;
-export const POPULARITY_LIST: Popularity[] = [
-  { "max": 100000, "min": 500 },
-  { "max": 100000, "min": 500 },
-  { "max": 100000, "min": 500 },
-  { "max": 500, "min": 100 },
-  { "max": 500, "min": 100 },
-  { "max": 500, "min": 100 },
-  { "max": 500, "min": 100 },
-  { "max": 500, "min": 100 },
-  { "max": 100, "min": 25 },
-  { "max": 25, "min": 1 },
-  { "max": 25, "min": 1 },
-  { "max": 1, "min": 1 },
-];
-
-export function choose_random_tags(tags: Tag[]): Tag[] {
-  return POPULARITY_LIST.map(({ max, min }) =>
-    sample(tags.filter(({ count }) => max >= count && count >= min))
-  ) as Tag[];
-}
 
 function score_to_show(index: number, guess_to_show: number | undefined) {
   return guess_to_show !== undefined ?
@@ -100,7 +73,6 @@ function App() {
       undefined :
       guess_matches(state.app.guesses[guess_to_show]!);
   });
-  const dispatch = useThunkDispatch();
 
   const [all_tags, set_all_tags] = useState<Tag[]>([]);
   const [video_wrapper, set_video_wrapper] = useState<VideoWrapper | undefined>(undefined);
@@ -125,20 +97,9 @@ function App() {
             max_score={score_to_show(index, guess_to_show)} />
       }
       {
-        all_tags.length === 0 &&
-        <Timer duration={LOADING_DURATION} />
-      }
-      {
         !playing &&
         guesses.length === 0 &&
-        all_tags.length > 0 &&
-        <Button
-          variant="contained"
-          disabled={all_tags.length === 0}
-          onClick={() => dispatch(start(choose_random_tags(all_tags)))}
-          id="start">
-            Start
-        </Button>
+        <StartButton all_tags={all_tags} />
       }
       {
         playing && tags.length > 0 && guess_to_show === undefined && video_wrapper &&
