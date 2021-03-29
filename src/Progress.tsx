@@ -1,8 +1,5 @@
-import { createStyles, makeStyles, Step, StepConnector, StepContent, StepIconProps, StepLabel, Stepper, Theme, Typography, withStyles } from "@material-ui/core";
-import { Check } from "@material-ui/icons";
+import { makeStyles, Step, StepConnector, StepIconProps, StepLabel, Stepper, withStyles } from "@material-ui/core";
 import clsx from "clsx";
-import { NONAME } from "node:dns";
-import React from "react";
 import guess_matches, { Guess } from "./GuessMatcher";
 
 

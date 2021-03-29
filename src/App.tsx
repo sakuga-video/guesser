@@ -4,8 +4,7 @@ import './App.css';
 import GuessInput from './GuessInput';
 import VideoPlayer from './VideoPlayer';
 import GuessResultUI from './GuessResultUI';
-import Score from './Score';
-import guess_matches, { Guess } from './GuessMatcher';
+import guess_matches from './GuessMatcher';
 import { fetch_all_tags } from './SakugaAPI';
 import VideoWrapper from './VideoWrapper';
 import { RootState, store } from './app/store';
@@ -25,24 +24,6 @@ export type Tag = {
   readonly id: number,
   readonly name: string,
 };
-
-function score_to_show(index: number, guess_to_show: number | undefined) {
-  return guess_to_show !== undefined ?
-    index + 1 :
-    index;
-}
-
-function score(guesses: Guess[], index: number) {
-  let total = 0;
-
-  for (let i = 0; i < index; i++) {
-    if (guess_matches(guesses[i]).result === "correct") {
-      total += 1;
-    }
-  }
-
-  return total;
-}
 
 export const useThunkDispatch = () => useDispatch<typeof store.dispatch>();
 
