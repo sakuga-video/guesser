@@ -53,7 +53,7 @@ video::-webkit-media-controls {
 
 #guess {
   z-index: 2147483647;
-  bottom: 15px;
+  bottom: 50px;
   left: 50%;
   transform: translateX(-50%);
   position: fixed;
@@ -82,11 +82,4 @@ video::-webkit-media-controls {
   margin: 1em;
   display:flex;
   justify-content: center;
-}
-
-.progress {
-  position:absolute;
-  left:0;
-  z-index: 100000;
-  max-width: 200px;
 }

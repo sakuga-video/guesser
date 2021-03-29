@@ -92,10 +92,6 @@ function App() {
   return (
     <div id="game">
       {
-        playing && (tags.length > 0) && index !== undefined &&
-        <Progress activeStep={index} steps={tags.map(tag => tag.name)} />
-      }
-      {
         !playing &&
         guesses.length === 0 &&
         <StartButton all_tags={all_tags} />
@@ -111,6 +107,10 @@ function App() {
 
           {videos[index] && <GuessInput all_tags={all_tags} />}
         </React.Fragment>
+      }
+      {
+        playing && (tags.length > 0) && index !== undefined &&
+        <Progress activeStep={index} steps={tags.map(tag => tag.name)} guesses={guesses} />
       }
       {
         guess_to_show !== undefined &&
