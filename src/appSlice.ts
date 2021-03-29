@@ -87,7 +87,7 @@ export const appSlice = createSlice({
     },
     skip_tag: state => {
       state.tags.splice(state.index, 1);
-      if ((state.index + 1) >= state.tags.length) {
+      if ((state.index) >= state.tags.length) {
         state.index = 0;
         state.playing = false;
       }
