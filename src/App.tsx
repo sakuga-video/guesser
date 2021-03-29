@@ -10,6 +10,7 @@ import { fetch_all_tags } from './SakugaAPI';
 import VideoWrapper from './VideoWrapper';
 import { RootState, store } from './app/store';
 import GameSummary, { Round } from './GameSummary';
+import Progress from './Progress';
 import StartButton from './StartButton';
 
 export enum TagType {
@@ -91,12 +92,6 @@ function App() {
   return (
     <div id="game">
       {
-        playing &&
-          <Score
-            score={score(guesses, score_to_show(index, guess_to_show))}
-            max_score={score_to_show(index, guess_to_show)} />
-      }
-      {
         !playing &&
         guesses.length === 0 &&
         <StartButton all_tags={all_tags} />
@@ -112,6 +107,10 @@ function App() {
 
           {videos[index] && <GuessInput all_tags={all_tags} />}
         </React.Fragment>
+      }
+      {
+        playing && (tags.length > 0) && index !== undefined &&
+        <Progress activeStep={index} steps={tags.map(tag => tag.name)} guesses={guesses} />
       }
       {
         guess_to_show !== undefined &&
