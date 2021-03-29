@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/guesser/static/css/main.a87e0fb9.chunk.css",
-    "main.js": "/guesser/static/js/main.92e65661.chunk.js",
-    "main.js.map": "/guesser/static/js/main.92e65661.chunk.js.map",
-    "runtime-main.js": "/guesser/static/js/runtime-main.c8a73380.js",
-    "runtime-main.js.map": "/guesser/static/js/runtime-main.c8a73380.js.map",
-    "static/js/2.7179a285.chunk.js": "/guesser/static/js/2.7179a285.chunk.js",
-    "static/js/2.7179a285.chunk.js.map": "/guesser/static/js/2.7179a285.chunk.js.map",
-    "static/js/3.d1f5b131.chunk.js": "/guesser/static/js/3.d1f5b131.chunk.js",
-    "static/js/3.d1f5b131.chunk.js.map": "/guesser/static/js/3.d1f5b131.chunk.js.map",
+    "main.js": "/guesser/static/js/main.a66d8ea7.chunk.js",
+    "main.js.map": "/guesser/static/js/main.a66d8ea7.chunk.js.map",
+    "runtime-main.js": "/guesser/static/js/runtime-main.ca174c29.js",
+    "runtime-main.js.map": "/guesser/static/js/runtime-main.ca174c29.js.map",
+    "static/js/2.cad70713.chunk.js": "/guesser/static/js/2.cad70713.chunk.js",
+    "static/js/2.cad70713.chunk.js.map": "/guesser/static/js/2.cad70713.chunk.js.map",
+    "static/js/3.442070a9.chunk.js": "/guesser/static/js/3.442070a9.chunk.js",
+    "static/js/3.442070a9.chunk.js.map": "/guesser/static/js/3.442070a9.chunk.js.map",
     "index.html": "/guesser/index.html",
     "static/css/main.a87e0fb9.chunk.css.map": "/guesser/static/css/main.a87e0fb9.chunk.css.map",
-    "static/js/2.7179a285.chunk.js.LICENSE.txt": "/guesser/static/js/2.7179a285.chunk.js.LICENSE.txt"
+    "static/js/2.cad70713.chunk.js.LICENSE.txt": "/guesser/static/js/2.cad70713.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.c8a73380.js",
-    "static/js/2.7179a285.chunk.js",
+    "static/js/runtime-main.ca174c29.js",
+    "static/js/2.cad70713.chunk.js",
     "static/css/main.a87e0fb9.chunk.css",
-    "static/js/main.92e65661.chunk.js"
+    "static/js/main.a66d8ea7.chunk.js"
   ]
 }
