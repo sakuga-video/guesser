@@ -12,7 +12,7 @@ class VideoWrapper {
     readonly wrap = (video_response: VideoResponse): Video => {
         const tags = video_response.tags
             .split(" ")
-            .map(tag_string => tag_string.replaceAll("_", " "))
+            .map(tag_string => tag_string.split("_").join(" "))
             .map(tag_string => this.tags_by_name.get(tag_string))
             .filter(tag => tag !== undefined) as Tag[];
 

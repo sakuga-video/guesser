@@ -16,7 +16,7 @@ export async function fetch_all_tags() {
 }
 
 export async function fetch_random_videos(tag: Tag, limit = 8): Promise<VideoResponse[]> {
-    const url = API_URL+'post.json?tags=rating:safe order:random ext:mp4,webm ' + tag.name.replaceAll(" ", "_") + "&limit=" + limit;
+    const url = API_URL+'post.json?tags=rating:safe order:random ext:mp4,webm ' + tag.name.split(" ").join("_") + "&limit=" + limit;
     const response = await fetch(url);
     return await response.json();
 }
@@ -24,5 +24,5 @@ export async function fetch_random_videos(tag: Tag, limit = 8): Promise<VideoRes
 const map_tag = (jsonTag: any): Tag => ({
     count: jsonTag.count,
     id: jsonTag.id,
-    name: jsonTag.name.replaceAll("_", " "),
+    name: jsonTag.name.split("_").join(" "),
 });
