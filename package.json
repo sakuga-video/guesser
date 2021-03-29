@@ -2,7 +2,7 @@
   "name": "aniguesser",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://sakuga.video/guesser",
+  "homepage": "https://guesser.sakuga.video/",
   "dependencies": {
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
