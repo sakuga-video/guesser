@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "aniguesser27c3392e": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}

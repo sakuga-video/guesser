@@ -9,6 +9,18 @@ import { lightBlue, red } from '@material-ui/core/colors';
 import { store } from './app/store';
 import { Provider } from 'react-redux';
 import { CssBaseline } from '@material-ui/core';
+import Amplify from 'aws-amplify';
+import config from './aws-exports';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import HistoryUI from './HistoryUI';
+
+
+Amplify.configure(config);
 
 export const dark_theme = createMuiTheme({
   palette: {
@@ -23,7 +35,16 @@ ReactDOM.render(
     <ThemeProvider theme={dark_theme}>
       <CssBaseline />
       <Provider store={store}>
-        <App />
+        <Router>
+          <Switch>
+            <Route path="/history">
+              <HistoryUI />
+            </Route>
+            <Route path="/">
+              <App />
+            </Route>
+          </Switch>
+        </Router>
       </Provider>
     </ThemeProvider>
   </React.StrictMode>,

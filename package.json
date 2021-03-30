@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://guesser.sakuga.video/",
   "dependencies": {
+    "@aws-amplify/ui-react": "^1.0.6",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
@@ -18,6 +19,8 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-redux": "^7.1.16",
+    "@types/react-router-dom": "^5.1.7",
+    "aws-amplify": "^3.3.26",
     "clsx": "^1.1.1",
     "fuse.js": "^6.4.6",
     "gh-pages": "^3.1.0",
