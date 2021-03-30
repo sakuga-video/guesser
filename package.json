@@ -35,7 +35,8 @@
   },
   "scripts": {
     "predeploy": "yarn run build",
-    "deploy": "gh-pages -b deploy -d build",
+    "prod": "gh-pages -b deploy -d build",
+    "dev": "gh-pages -b dev -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
