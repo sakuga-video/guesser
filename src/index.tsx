@@ -12,7 +12,7 @@ import { CssBaseline } from '@material-ui/core';
 
 export const dark_theme = createMuiTheme({
   palette: {
-    type: 'light',
+    type: 'dark',
     primary: lightBlue,
     secondary: red
   },
