@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useThunkDispatch } from "./App";
+import { Tag, useThunkDispatch } from "./App";
 import { RootState } from "./app/store";
 import { DatabaseGuess } from "./GuessDatabase";
 import { load_guesses, load_num_pages } from "./historySlice";
 import { sortBy } from 'lodash';
 import { Pagination } from "@material-ui/lab";
-import { Container, Grid } from "@material-ui/core";
+import { Card, CardActionArea, CardContent, CardMedia, Container, Grid, Typography } from "@material-ui/core";
+import { SAKUGABOORU_TAG_URL } from "./GameSummary";
+import Matches, { Guess } from "./GuessMatcher";
 
 const PAGE_SIZE = 12;
 
@@ -36,6 +38,16 @@ const History = () => {
     )
 };
 
+const render_guess = (guess: string | undefined, answers: Tag[]) => {
+    const match_result = Matches({guess, answers});
+    const guess_string = "\"" + guess + "\" ";
+    return {
+        missing: "No guess",
+        correct: guess_string + "🎉 was correct 🎊",
+        incorrect: guess_string + "was incorrect",
+    }[match_result.result]
+}
+
 const guess_ui = (guess: DatabaseGuess) => {
     const last_video = guess.videos[guess.videos.length - 1];
     const tags = sortBy(last_video.tags, ["count"]);
@@ -43,10 +55,24 @@ const guess_ui = (guess: DatabaseGuess) => {
 
     return (
         <Grid key={guess.id} item className="round-summary" xs={12} sm={6} md={4}>
-            <p>Title: <a href={"https://www.sakugabooru.com/post?tags=" + title.split(" ").join("_")}>{title}</a></p>
-            <p>Guess: {guess.guess}</p>
-            <p>Date: {new Date(guess.date).toDateString()}</p>
-            <a href={last_video.url}><img src={last_video.preview_url} /></a>
+            <Card>
+                <CardActionArea href={SAKUGABOORU_TAG_URL + title.split(" ").join("_")} target="_blank">
+                    <CardMedia
+                        component="img"
+                        title={"Image thumbnail of a clip from " + guess.videos[0].tags[0].name}
+                        alt={"Image thumbnail of a clip from " + guess.videos[0].tags[0].name}
+                        image={guess.videos[0].preview_url}
+                    />
+                    <CardContent>
+                        <Typography gutterBottom variant="h5" component="h2">
+                            {title}
+                        </Typography>
+                        <Typography variant="body2" component="p">
+                            {render_guess(guess.guess, tags)}
+                        </Typography>
+                    </CardContent>
+                </CardActionArea>
+            </Card>
         </Grid>
     );
 }

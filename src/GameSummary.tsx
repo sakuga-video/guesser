@@ -17,7 +17,7 @@ export type Round = {
 }
 
 const SAKUGABOORU_URL = "https://www.sakugabooru.com/post";
-const SAKUGABOORU_TAG_URL = SAKUGABOORU_URL + "?tags=";
+export const SAKUGABOORU_TAG_URL = SAKUGABOORU_URL + "?tags=";
 
 const render_guess = (guess: Guess) => {
     const match_result = Matches(guess);
