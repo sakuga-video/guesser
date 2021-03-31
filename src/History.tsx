@@ -1,2 +1,7 @@
-const History = () => <p>history</p>;
+import Dexie from 'dexie';
+
+const History = () => (
+    <p>history</p>
+);
+
 export default History;

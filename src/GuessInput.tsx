@@ -4,7 +4,7 @@ import { Autocomplete } from '@material-ui/lab';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { Tag, useThunkDispatch } from './App';
 import { matchSorter, MatchSorterOptions } from 'match-sorter';
-import { change_guess, submit_guess } from './appSlice';
+import { change_guess, save_and_submit_guess } from './appSlice';
 import Timer from './Timer';
 
 const TAG_TIMER_DURATION = 30;
@@ -32,7 +32,7 @@ const GuessInput = ({ all_tags }: { all_tags: Tag[] }) => {
   const on_form_submitted = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (guess) {
-      dispatch(submit_guess());
+      dispatch(save_and_submit_guess(0));
     }
   }
 
@@ -58,7 +58,7 @@ const GuessInput = ({ all_tags }: { all_tags: Tag[] }) => {
         <Timer
           size={68}
           duration={TAG_TIMER_DURATION}
-          on_time_over={() => dispatch(submit_guess())}
+          on_time_over={() => dispatch(save_and_submit_guess(TAG_TIMER_DURATION))}
           count_down={true}
           show_emergency_color={true}
           className={classes.fabProgress}
