@@ -11,6 +11,7 @@ import { RootState, store } from './app/store';
 import GameSummary, { Round } from './GameSummary';
 import Progress from './Progress';
 import StartButton from './StartButton';
+import Navigation from './Navigation';
 
 export enum TagType {
   GENERAL = 0,
@@ -67,7 +68,12 @@ function App() {
   }, []);
 
   if (!playing && guesses.length > 0) {
-    return <GameSummary rounds={rounds} all_tags={all_tags} />;
+    return (
+      <React.Fragment>
+        <GameSummary rounds={rounds} all_tags={all_tags} />
+        <Navigation />
+      </React.Fragment>
+    );
   }
 
   return (
@@ -75,7 +81,10 @@ function App() {
       {
         !playing &&
         guesses.length === 0 &&
-        <StartButton all_tags={all_tags} />
+        <React.Fragment>
+          <StartButton all_tags={all_tags} />
+          <Navigation />
+        </React.Fragment>
       }
       {
         playing && tags.length > 0 && guess_to_show === undefined && video_wrapper &&

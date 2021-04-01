@@ -2,6 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Tag } from './App';
 import { Guess } from './GuessMatcher';
 import { Video } from './VideoWrapper';
+import { AppThunk } from './app/store';
+import database from './GuessDatabase';
 
 interface AppState {
   readonly videos: Video[][],
@@ -38,24 +40,9 @@ export const appSlice = createSlice({
     set_videos: (state, action: PayloadAction<Video[]>) => {
       state.videos[state.index] = action.payload;
     },
-    submit_guess: state => {
-      const guesses = state.guesses;
-      const index = state.index;
-      const videos = state.videos[index];
-
-      // someone tried to submit a guess before
-      // the video loaded. just ignore it
-      if (videos === undefined || !videos[0]?.played) {
-        return;
-      }
-    
-      state.guess_to_show = index;
-    
-      if (!guesses[index]) {
-        guesses[index] = {
-          answers: videos[videos.length - 1]?.tags ?? [],
-        };
-      }
+    submit_guess: (state, action: PayloadAction<Guess>) => {
+      state.guess_to_show = state.index;
+      state.guesses[state.index] = action.payload;
     },
     show_next_tag: state => {
       const index = state.index;
@@ -104,5 +91,37 @@ export const {
   skip_tag,
   set_videos,
 } = appSlice.actions;
+
+export const save_and_submit_guess = (time_to_guess: number): AppThunk => (dispatch, getState) => {
+  const state = getState().app;
+  const guesses = state.guesses;
+  const index = state.index;
+  const videos = state.videos[index];
+
+  // someone tried to submit a guess before
+  // the video loaded. just ignore it
+  if (videos === undefined || !videos[0]?.played) {
+    return;
+  }
+
+  // video timed out. submit an empty guess
+  let guess = guesses[index];
+  if (!guess) {
+    guess = {
+      answers: videos[videos.length - 1]?.tags ?? [],
+    };
+  }
+
+  database.guesses.put({
+    date: Date.now(),
+    guess: guess.guess,
+    videos: videos.filter(video => video.played),
+    time_to_guess,
+  }).catch(error => {
+      console.log(error);
+  });
+
+  dispatch(submit_guess(guess));
+};
 
 export default appSlice.reducer;
