@@ -20,17 +20,6 @@ video {
   top:0;
 }
 
-#guess-result {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size:1.5em;
-}
-
-#incorrect-guess {
-  text-decoration: line-through;
-}
-
 video::-webkit-media-controls {
   display:none !important;
 }

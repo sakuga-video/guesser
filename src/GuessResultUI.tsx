@@ -2,8 +2,9 @@ import { Tag, useThunkDispatch } from './App';
 import { sortBy } from 'lodash';
 import Timer from './Timer';
 import { show_next_tag } from './appSlice';
-import { makeStyles, Paper } from '@material-ui/core';
+import { Container, makeStyles, Paper, Typography } from '@material-ui/core';
 import { MatchResult } from './GuessMatcher';
+import React from 'react';
 
 const RESULT_DISPLAY_DURATION = 4;
 
@@ -12,7 +13,12 @@ const useStyles = makeStyles({
       width: "100%",
     },
     root: {
-        flexBasis: "400px",
+        width:400,
+        height:200,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-evenly",
+        alignItems: "center",
     },
 });
 
@@ -36,15 +42,17 @@ const GuessResultUI = ({guess, answers, closest_answer, result, is_exact}: Guess
         />
     );
     return (
-        <Paper id="guess-result" className={classes.root}>
-            {result !== "missing" && <p>{guess}</p>}
-            {result === "correct" && !is_exact && <p>({closest_answer})</p> }
-            <h1>{{
-                correct: "🎉 is correct 🎊",
-                incorrect: "is incorrect",
-                missing: "No guess",
-            }[result]}</h1>
-            {result !== "correct" && answer_ui(answers)}
+        <Paper>
+            <Container className={classes.root}>
+                {result !== "missing" && <Typography variant="body1">{guess}</Typography>}
+                {result === "correct" && !is_exact && <Typography variant="body1">({closest_answer})</Typography> }
+                <Typography variant="h3" component="p">{{
+                    correct: "🎉 is correct 🎊",
+                    incorrect: "is incorrect",
+                    missing: "No guess",
+                }[result]}</Typography>
+                {result !== "correct" && answer_ui(answers)}
+            </Container>
             {timer}
         </Paper>
     )
@@ -52,7 +60,7 @@ const GuessResultUI = ({guess, answers, closest_answer, result, is_exact}: Guess
 
 const answer_ui = (answers: Tag[]) => {
     if (answers.length > 0) {
-        return <p>it was {sortBy(answers, tag => tag.count)[answers.length - 1].name}</p>
+        return <Typography variant="body1">it was {sortBy(answers, tag => tag.count)[answers.length - 1].name}</Typography>
     } else {
         return null;
     }

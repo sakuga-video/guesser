@@ -12,7 +12,7 @@ const Template: Story<GuessResultUIProps> = (args) => (
     </div>
 )
 
-const TAG_NAME = "tag name";
+const TAG_NAME = "this is a really long tag name that wraps around the box";
 const ANSWER = {
     count: 1,
     id: 1,
