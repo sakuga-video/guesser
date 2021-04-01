@@ -1,4 +1,4 @@
-body, html, #root, #game {
+body, html {
   margin:0;
   padding:0;
   height: 100%;
@@ -6,6 +6,8 @@ body, html, #root, #game {
 }
 
 #game {
+  min-height: 100%;
+  padding-bottom: 56px;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -6,40 +6,60 @@ import { DatabaseGuess } from "./GuessDatabase";
 import { load_guesses, load_num_pages } from "./historySlice";
 import { sortBy } from 'lodash';
 import { Pagination } from "@material-ui/lab";
-import { Card, CardActionArea, CardContent, CardMedia, Container, Grid, Typography } from "@material-ui/core";
+import { Card, CardActionArea, CardContent, CardMedia, Container, Grid, makeStyles, Typography } from "@material-ui/core";
 import { SAKUGABOORU_TAG_URL } from "./GameSummary";
-import Matches, { Guess } from "./GuessMatcher";
+import Matches from "./GuessMatcher";
+import Navigation from "./Navigation";
 
 const PAGE_SIZE = 12;
+
+const useStyles = makeStyles({
+    pagination: {
+        margin: "1em 0",
+    },
+    container: {
+        paddingBottom: 56,
+    }
+})
 
 const History = () => {
     const dispatch = useThunkDispatch();
     const { guesses, num_guesses, page } = useSelector((state: RootState) => state.history);
+    const classes = useStyles();
 
     useEffect(() => dispatch(load_num_pages()), [dispatch]);
     useEffect(() => dispatch(load_guesses({ page: 0, page_size: PAGE_SIZE })), [dispatch]);
 
     const on_page_change = (_: React.ChangeEvent<unknown>, page: number) => {
-        dispatch(load_guesses({page: page - 1, page_size: PAGE_SIZE}));
+        dispatch(load_guesses({ page: page - 1, page_size: PAGE_SIZE }));
     }
 
-    return (
-        <Container>
+    const game_history = (
+        <React.Fragment>
             <Grid container spacing={2}>
                 {guesses.map(guess_ui)}
             </Grid>
             <Pagination
+                className={classes.pagination}
                 page={page + 1}
                 count={Math.ceil(num_guesses / PAGE_SIZE)}
                 onChange={on_page_change}
             />
-        </Container>
+        </React.Fragment>
+    );
 
+    return (
+        <React.Fragment>
+            <Container className={classes.container}>
+                {guesses.length === 0 ? <h1>No game history</h1> : game_history}
+            </Container>
+            <Navigation />
+        </React.Fragment>
     )
 };
 
 const render_guess = (guess: string | undefined, answers: Tag[]) => {
-    const match_result = Matches({guess, answers});
+    const match_result = Matches({ guess, answers });
     const guess_string = "\"" + guess + "\" ";
     return {
         missing: "No guess",

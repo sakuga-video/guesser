@@ -25,20 +25,20 @@ ReactDOM.render(
     <ThemeProvider theme={dark_theme}>
       <CssBaseline />
       <Provider store={store}>
-      <Router>
-        <Switch>
-          <Route path="/history">
-            <History />
-          </Route>
-          <Route path="/">
-            <App />
-          </Route>
-        </Switch>
-      </Router>
+        <Router>
+          <Switch>
+            <Route path="/history">
+              <History />
+            </Route>
+            <Route path="/">
+              <App />
+            </Route>
+          </Switch>
+        </Router>
       </Provider>
     </ThemeProvider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.querySelector('body')
 );
 
 // If you want to start measuring performance in your app, pass a function
