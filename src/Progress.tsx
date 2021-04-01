@@ -85,7 +85,7 @@ const Progress = ({ activeStep, steps, guesses }: { activeStep: number, steps: s
             {steps.map((label, index) => {
                 const is_correct = guesses[index] && guess_matches(guesses[index]).result === "correct";
                 return (
-                    <Step key={label}>
+                    <Step key={index}>
                         <StepLabel StepIconComponent={ProgressStepIcon(is_correct)}></StepLabel>
                     </Step>
                 );
