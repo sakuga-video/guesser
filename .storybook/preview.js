@@ -1,7 +1,8 @@
 import { ThemeProvider } from '@material-ui/styles';
 import '../src/App.css';
 import { Provider } from 'react-redux';
-import { dark_theme } from '../src/index';
+import { CssBaseline } from '@material-ui/core';
+import dark_theme from '../src/dark_theme';
 import { store } from '../src/app/store';
 
 export const parameters = {
@@ -11,6 +12,7 @@ export const parameters = {
 export const decorators = [
   (Story) => (
     <ThemeProvider theme={dark_theme}>
+      <CssBaseline />
       <Provider store={store}>
         <Story />
       </Provider>
