@@ -3,6 +3,8 @@ import React from 'react';
 import { Story, Meta } from '@storybook/react/types-6-0';
 import GameSummary, { GameSummaryProps } from './GameSummary';
 import { TagType } from './App';
+import Navigation from './Navigation';
+import { Route } from 'react-router-dom';
 
 
 export default {
@@ -10,7 +12,14 @@ export default {
   component: GameSummary,
 } as Meta;
 
-const Template: Story<GameSummaryProps> = (args) => <GameSummary {...args} />;
+const Template: Story<GameSummaryProps> = (args) => (
+    <React.Fragment>
+        <Route path="/">
+            <GameSummary {...args} />
+            <Navigation />
+        </Route>
+    </React.Fragment>
+);
 
 const EIZOUKEN_NAME = "eizouken ni wa te wo dasu na!";
 const EIZOUKEN_TAG = {

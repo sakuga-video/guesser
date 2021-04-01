@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { CssBaseline } from '@material-ui/core';
 import dark_theme from '../src/dark_theme';
 import { store } from '../src/app/store';
+import { BrowserRouter as Router, Switch } from 'react-router-dom';
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -14,7 +15,11 @@ export const decorators = [
     <ThemeProvider theme={dark_theme}>
       <CssBaseline />
       <Provider store={store}>
-        <Story />
+        <Router>
+          <Switch>
+            <Story />
+          </Switch>
+        </Router>
       </Provider>
     </ThemeProvider>
   )

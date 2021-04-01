@@ -29,20 +29,27 @@ const render_guess = (guess: Guess) => {
     }[match_result.result]
 }
 
-const useStyles = makeStyles({
+const useCardStyles = makeStyles({
     root: {
         minHeight: 250,
     }
 });
 
+const useContainerStyles = makeStyles({
+    root: {
+        paddingBottom:56,
+    }
+});
+
 const GameSummary = ({rounds, all_tags}: GameSummaryProps) => {
     const dispatch = useThunkDispatch();
-    const classes = useStyles();
+    const card_classes = useCardStyles();
+    const container_classes = useContainerStyles();
 
     const round_summary = (round: Round, index: number) => {
         return (
             <Grid key={index} item className="round-summary" xs={12} sm={6} md={4}>
-                <Card classes={classes}>
+                <Card classes={card_classes}>
                     <CardActionArea href={SAKUGABOORU_TAG_URL + round.tag.name.split(" ").join("_")} target="_blank">
                         <CardMedia
                             component="img"
@@ -65,10 +72,8 @@ const GameSummary = ({rounds, all_tags}: GameSummaryProps) => {
     }    
 
     return (
-        <Container>
-            <Grid container spacing={2}>
-                {rounds.map(round_summary)}
-            </Grid>
+        <Container classes={container_classes}>
+            <Typography variant="h3" component="h1" gutterBottom align="center">Game Summary</Typography>
             <div id="play-again">
                 <Button
                     variant="contained"
@@ -78,6 +83,9 @@ const GameSummary = ({rounds, all_tags}: GameSummaryProps) => {
                         Play Again
                 </Button>
             </div>
+            <Grid container spacing={2}>
+                {rounds.map(round_summary)}
+            </Grid>
         </Container>
     )
 }
