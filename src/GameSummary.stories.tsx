@@ -5,6 +5,7 @@ import GameSummary, { GameSummaryProps } from './GameSummary';
 import { TagType } from './App';
 import Navigation from './Navigation';
 import { Route } from 'react-router-dom';
+import { Round } from './GameDatabase';
 
 
 export default {
@@ -26,15 +27,10 @@ const EIZOUKEN_TAG = {
     name: EIZOUKEN_NAME,
     ambiguous: false, count: 1, id: 1, type: TagType.COPYRIGHT,
 };
-const INCORRECT_GUESS = {
-    answers: [EIZOUKEN_TAG],
-    guess: "incorrect guess",
-};
-const CORRECT_GUESS = {
-    answers: [EIZOUKEN_TAG],
-    guess: EIZOUKEN_NAME,
-};
-const INCORRECT_ROUND = {
+const INCORRECT_GUESS =  "incorrect guess";
+const CORRECT_GUESS = EIZOUKEN_NAME;
+
+const INCORRECT_ROUND: Round = {
     tag: EIZOUKEN_TAG,
     videos: [{
         url:"https://sakugabooru.com/data/f5fd3ce666022275c261156be8fb14e0.mp4",
@@ -44,8 +40,10 @@ const INCORRECT_ROUND = {
 
     }],
     guess: INCORRECT_GUESS,
+    date: 0,
+    time_to_guess: 0,
 };
-const CORRECT_ROUND = {
+const CORRECT_ROUND: Round = {
     ...INCORRECT_ROUND,
     guess: CORRECT_GUESS,
 };
