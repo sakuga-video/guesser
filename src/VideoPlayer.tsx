@@ -11,6 +11,8 @@ type Props = {
     video_wrapper: VideoWrapper,
 };
 
+const increment = (index: number, max: number) => (index + 1) % max;
+
 const VideoPlayer = ({ tag, videos, video_wrapper }: Props) => {
     const dispatch = useThunkDispatch();
     const [loading, set_loading] = useState(true);
@@ -36,7 +38,7 @@ const VideoPlayer = ({ tag, videos, video_wrapper }: Props) => {
 
     const play_next_video = () => {
         if (videos.length > 1) {
-            const new_index = (index + 1) % videos.length;
+            const new_index = increment(index, videos.length);
             set_index(new_index);
         }
     }
@@ -45,19 +47,30 @@ const VideoPlayer = ({ tag, videos, video_wrapper }: Props) => {
         <React.Fragment>
         {(videos.length === 0 || loading) && <CircularProgress className="video-loading" />}
         <video
+            key={index}
             muted
             onWaiting={() => set_loading(true)}
-            onCanPlay={() => set_loading(false)}
-            onPlay={() => dispatch(mark_played(index))}
-            preload="auto"
+            onPlay={() => {dispatch(mark_played(index)); set_loading(false);}}
             autoPlay
             loop={videos.length === 1}
             onError={play_next_video}
             src={videos[index]?.url}
-            onEnded={() => {console.log("video ended"); set_loading(true); play_next_video()}}
+            className="active"
+            onEnded={() => {set_loading(true); play_next_video()}}
         />
+
+        {
+            videos.length > 1 &&
+            <video
+                key={increment(index, videos.length)}
+                muted
+                preload="auto"
+                src={videos[increment(index, videos.length)]?.url}
+            />
+        }
         </React.Fragment>
     );
+
 }
 
 export default VideoPlayer;

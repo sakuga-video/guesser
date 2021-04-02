@@ -15,9 +15,14 @@ body, html, #root {
 
 video {
   position: fixed;
+  visibility: hidden;
   object-fit: contain;
   width: 100%;
   top:0;
+}
+
+video.active {
+  visibility: visible;
 }
 
 video::-webkit-media-controls {
