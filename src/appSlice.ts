@@ -3,7 +3,7 @@ import { Tag } from './App';
 import { Guess } from './GuessMatcher';
 import { Video } from './VideoWrapper';
 import { AppThunk } from './app/store';
-import database from './GuessDatabase';
+import database from './GameDatabase';
 
 interface AppState {
   readonly videos: Video[][],
@@ -102,6 +102,7 @@ export const save_and_submit_guess = (time_to_guess: number): AppThunk => (dispa
   const guesses = state.guesses;
   const index = state.index;
   const videos = state.videos[index];
+  const tag = state.tags[index];
 
   // someone tried to submit a guess before
   // the video loaded. just ignore it
@@ -117,11 +118,12 @@ export const save_and_submit_guess = (time_to_guess: number): AppThunk => (dispa
     };
   }
 
-  database.guesses.put({
+  database.rounds.put({
     date: Date.now(),
     guess: guess.guess,
     videos: videos.filter(video => video.played),
     time_to_guess,
+    tag,
   })
   .then(() => dispatch(submit_guess(guess)))
   .catch(console.log);

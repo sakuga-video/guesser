@@ -1,56 +1,56 @@
-import database from './GuessDatabase';
+import database from './GameDatabase';
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "./app/store";
-import { DatabaseGuess } from "./GuessDatabase";
+import { Round } from "./GameDatabase";
 
 interface HistoryState {
-    readonly guesses: DatabaseGuess[],
+    readonly rounds: Round[],
     readonly page: number,
-    readonly num_guesses: number,
+    readonly num_rounds: number,
 }
 
 const initialState: HistoryState = {
-    guesses: [],
+    rounds: [],
     page: 0,
-    num_guesses: 0,
+    num_rounds: 0,
 }
 
 export const historySlice = createSlice({
     name: 'history',
     initialState,
     reducers: {
-        set_guesses: (state, action: PayloadAction<{page: number, guesses: DatabaseGuess[]}>) => {
-            state.guesses = action.payload.guesses;
+        set_rounds: (state, action: PayloadAction<{page: number, rounds: Round[]}>) => {
+            state.rounds = action.payload.rounds;
             state.page = action.payload.page;
         },
-        set_num_guesses: (state, action: PayloadAction<number>) => {
-            state.num_guesses = action.payload;
+        set_num_rounds: (state, action: PayloadAction<number>) => {
+            state.num_rounds = action.payload;
         },
     }
 });
 
 export const {
-    set_guesses,
-    set_num_guesses,
+    set_rounds,
+    set_num_rounds,
 } = historySlice.actions;
 
 export const load_num_pages = (): AppThunk => dispatch => {
-    database.guesses.count()
-        .then(count => dispatch(set_num_guesses(count)));
+    database.rounds.count()
+        .then(count => dispatch(set_num_rounds(count)));
 }
 
 type Page = { page: number, page_size: number };
 
-export const load_guesses =
+export const load_rounds =
     ({ page, page_size }: Page): AppThunk =>
     dispatch => {
-        database.guesses
+        database.rounds
             .orderBy("date")
             .reverse()
             .offset(page * page_size)
             .limit(page_size)
             .toArray()
-            .then(guesses => dispatch(set_guesses({page, guesses})));
+            .then(rounds => dispatch(set_rounds({page, rounds})));
     }
 
 export default historySlice.reducer;

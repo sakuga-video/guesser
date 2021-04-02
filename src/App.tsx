@@ -8,10 +8,11 @@ import guess_matches from './GuessMatcher';
 import { fetch_all_tags } from './SakugaAPI';
 import VideoWrapper from './VideoWrapper';
 import { RootState, store } from './app/store';
-import GameSummary, { Round } from './GameSummary';
+import GameSummary from './GameSummary';
 import Progress from './Progress';
 import StartButton from './StartButton';
 import Navigation from './Navigation';
+import { Round } from './GameDatabase';
 
 export enum TagType {
   GENERAL = 0,
@@ -45,7 +46,9 @@ function App() {
       rounds.push({
         tag: app.tags[i],
         videos: app.videos[i]?.filter(video => video.played),
-        guess: app.guesses[i],
+        guess: app.guesses[i]?.guess,
+        date: Date.now(),
+        time_to_guess: 0,
       });
     }
     return rounds;
