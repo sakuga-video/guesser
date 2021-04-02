@@ -80,13 +80,15 @@ const ProgressConnector = withStyles({
 
 const Progress = ({ activeStep, steps, guesses }: { activeStep: number, steps: string[], guesses: Guess[] }) => {
     const classes = progressStyles();
+    const CorrectIcon = ProgressStepIcon(true);
+    const IncorrectIcon = ProgressStepIcon(false);
     return (
         <Stepper activeStep={activeStep} className={classes.root} connector={<ProgressConnector />}>
             {steps.map((label, index) => {
                 const is_correct = guesses[index] && guess_matches(guesses[index]).result === "correct";
                 return (
                     <Step key={index}>
-                        <StepLabel StepIconComponent={ProgressStepIcon(is_correct)}></StepLabel>
+                        <StepLabel StepIconComponent={is_correct ? CorrectIcon : IncorrectIcon}></StepLabel>
                     </Step>
                 );
             })}
