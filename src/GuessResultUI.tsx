@@ -1,7 +1,7 @@
 import { Tag, useThunkDispatch } from './App';
 import { sortBy } from 'lodash';
 import Timer from './Timer';
-import { show_next_tag } from './appSlice';
+import { stop_showing_guess_results } from './appSlice';
 import { Container, makeStyles, Paper, Typography } from '@material-ui/core';
 import { MatchResult } from './GuessMatcher';
 import React from 'react';
@@ -36,7 +36,7 @@ const GuessResultUI = ({guess, answers, closest_answer, result, is_exact}: Guess
     const timer = (
         <Timer
             duration={RESULT_DISPLAY_DURATION}
-            on_time_over={() => dispatch(show_next_tag())}
+            on_time_over={() => dispatch(stop_showing_guess_results())}
             type = "linear"
             className={classes.timer}
         />

@@ -67,7 +67,7 @@ function App() {
     });
   }, []);
 
-  if (!playing && guesses.length > 0) {
+  if (!playing && guesses.length > 0 && guess_to_show === undefined) {
     return (
       <React.Fragment>
         <GameSummary rounds={rounds} all_tags={all_tags} />
@@ -87,19 +87,20 @@ function App() {
         </React.Fragment>
       }
       {
-        playing && tags.length > 0 && guess_to_show === undefined && video_wrapper &&
+        playing && tags.length > 0 && video_wrapper &&
         <React.Fragment>
           <VideoPlayer
             tag={tags[index]}
             videos={videos[index] ?? []}
             video_wrapper={video_wrapper}
+            should_play={guess_to_show === undefined}
           />
 
-          {videos[index] && <GuessInput all_tags={all_tags} />}
+          {guess_to_show === undefined && videos[index] && <GuessInput all_tags={all_tags} />}
         </React.Fragment>
       }
       {
-        playing && (tags.length > 0) && index !== undefined &&
+        (playing || index > 0) && tags.length > 0 &&
         <Progress activeStep={index} steps={tags.map(tag => tag.name)} guesses={guesses} />
       }
       {
