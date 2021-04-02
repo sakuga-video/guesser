@@ -41,21 +41,26 @@ export const appSlice = createSlice({
       state.videos[state.index] = action.payload;
     },
     submit_guess: (state, action: PayloadAction<Guess>) => {
-      state.guess_to_show = state.index;
-      state.guesses[state.index] = action.payload;
-    },
-    show_next_tag: state => {
       const index = state.index;
+
+      // show current guess
+      state.guess_to_show = index;
+      state.guesses[index] = action.payload;
+
+      // advance to next tag in the background,
+      // so we can preload the next video
       if ((index + 1) < state.tags.length) {
         state.index = index + 1;
       } else {
-        state.index = 0;
         state.playing = false;
       }
+    },
+    stop_showing_guess_results: state => {
       state.guess_to_show = undefined;
     },
     start: (state, action: PayloadAction<Tag[]>) => {
       state.index = 0;
+      state.guess_to_show = undefined;
       state.guesses = [];
       state.videos = [];
       state.playing = true;
@@ -84,7 +89,7 @@ export const appSlice = createSlice({
 
 export const {
   mark_played,
-  show_next_tag,
+  stop_showing_guess_results,
   start,
   submit_guess,
   change_guess,
@@ -117,11 +122,9 @@ export const save_and_submit_guess = (time_to_guess: number): AppThunk => (dispa
     guess: guess.guess,
     videos: videos.filter(video => video.played),
     time_to_guess,
-  }).catch(error => {
-      console.log(error);
-  });
-
-  dispatch(submit_guess(guess));
+  })
+  .then(() => dispatch(submit_guess(guess)))
+  .catch(console.log);
 };
 
 export default appSlice.reducer;

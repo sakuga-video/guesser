@@ -29,7 +29,7 @@ ReactDOM.render(
       </Provider>
     </ThemeProvider>
   </React.StrictMode>,
-  document.querySelector('body')
+  document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

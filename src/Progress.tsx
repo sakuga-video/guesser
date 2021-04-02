@@ -37,11 +37,12 @@ const ProgressStepIcon = (correct: boolean) => {
         const { active, completed } = props;
     
         let progressClass = classes.circle;
+
         if (completed) {
             progressClass += " " + classes.completed;
-        }
-        if (correct) {
-            progressClass += " " + classes.correct;
+            if (correct) {
+                progressClass += " " + classes.correct;
+            }
         }
     
         return (
@@ -80,13 +81,15 @@ const ProgressConnector = withStyles({
 
 const Progress = ({ activeStep, steps, guesses }: { activeStep: number, steps: string[], guesses: Guess[] }) => {
     const classes = progressStyles();
+    const CorrectIcon = ProgressStepIcon(true);
+    const IncorrectIcon = ProgressStepIcon(false);
     return (
         <Stepper activeStep={activeStep} className={classes.root} connector={<ProgressConnector />}>
             {steps.map((label, index) => {
                 const is_correct = guesses[index] && guess_matches(guesses[index]).result === "correct";
                 return (
-                    <Step key={label}>
-                        <StepLabel StepIconComponent={ProgressStepIcon(is_correct)}></StepLabel>
+                    <Step key={index}>
+                        <StepLabel StepIconComponent={is_correct ? CorrectIcon : IncorrectIcon}></StepLabel>
                     </Step>
                 );
             })}
