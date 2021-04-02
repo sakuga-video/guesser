@@ -30,8 +30,13 @@ const render_guess = (guess: Guess) => {
 }
 
 const useCardStyles = makeStyles({
-    root: {
-        minHeight: 250,
+    title: {
+        textOverflow: "ellipsis",
+        overflow: "hidden",
+        whiteSpace: "nowrap",
+    },
+    media: {
+        height: 240,
     }
 });
 
@@ -49,16 +54,17 @@ const GameSummary = ({rounds, all_tags}: GameSummaryProps) => {
     const round_summary = (round: Round, index: number) => {
         return (
             <Grid key={index} item className="round-summary" xs={12} sm={6} md={4}>
-                <Card classes={card_classes}>
+                <Card>
                     <CardActionArea href={SAKUGABOORU_TAG_URL + round.tag.name.split(" ").join("_")} target="_blank">
                         <CardMedia
                             component="img"
                             title={"Image thumbnail of a clip from " + round.videos[0].tags[0].name}
                             alt={"Image thumbnail of a clip from " + round.videos[0].tags[0].name}
                             image={round.videos[0].preview_url}
+                            className={card_classes.media}
                         />
                         <CardContent>
-                            <Typography gutterBottom variant="h5" component="h2">
+                            <Typography gutterBottom variant="h6" component="h2" className={card_classes.title}>
                                 {round.tag.name}
                             </Typography>
                             <Typography variant="body2" component="p">
