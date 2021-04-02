@@ -37,11 +37,12 @@ const ProgressStepIcon = (correct: boolean) => {
         const { active, completed } = props;
     
         let progressClass = classes.circle;
+
         if (completed) {
             progressClass += " " + classes.completed;
-        }
-        if (correct) {
-            progressClass += " " + classes.correct;
+            if (correct) {
+                progressClass += " " + classes.correct;
+            }
         }
     
         return (
