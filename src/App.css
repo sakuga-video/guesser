@@ -13,7 +13,7 @@ body, html, #root {
   justify-content: center;
 }
 
-video {
+#main-video, #preloading-video {
   position: fixed;
   visibility: hidden;
   object-fit: contain;
@@ -21,11 +21,11 @@ video {
   top:0;
 }
 
-video.active {
+#main-video.active {
   visibility: visible;
 }
 
-video::-webkit-media-controls {
+#main-video::-webkit-media-controls {
   display:none !important;
 }
 

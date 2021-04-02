@@ -57,6 +57,7 @@ const VideoPlayer = ({ tag, videos, video_wrapper, should_play }: Props) => {
             onError={play_next_video}
             src={videos[index]?.url}
             className={should_play ? "active": ""}
+            id="main-video"
             onEnded={() => {set_loading(true); play_next_video()}}
         />
 
@@ -66,6 +67,7 @@ const VideoPlayer = ({ tag, videos, video_wrapper, should_play }: Props) => {
                 key={increment(index, videos.length)}
                 muted
                 preload="auto"
+                id="preloading-video"
                 src={videos[increment(index, videos.length)]?.url}
             />
         }
