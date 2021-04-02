@@ -4,7 +4,8 @@ import { Round } from "./GameDatabase";
 import { Tag } from "./App";
 import Matches from "./GuessMatcher";
 
-export const TAG_URL = "https://www.sakugabooru.com/post?tags=";
+const TAG_URL = "https://www.sakugabooru.com/post?tags=";
+export const tag_url = (tag: Tag) => TAG_URL + tag.name.split(" ").join("_");
 
 const useStyles = makeStyles({
     title: {
@@ -26,11 +27,11 @@ const RoundSummary = ({ round }: RoundSummaryProps) => {
 
     const last_video = round.videos[round.videos.length - 1];
     const tags = sortBy(last_video.tags, ["count"]);
-    const title = tags[tags.length - 1].name;
+    const title_tag = tags[tags.length - 1];
 
     return (
         <Card>
-            <CardActionArea href={TAG_URL + title.split(" ").join("_")} target="_blank">
+            <CardActionArea href={tag_url(title_tag)} target="_blank">
                 <CardMedia
                     component="img"
                     title={"Image thumbnail of a clip from " + round.videos[0].tags[0].name}
@@ -40,7 +41,7 @@ const RoundSummary = ({ round }: RoundSummaryProps) => {
                 />
                 <CardContent>
                     <Typography gutterBottom variant="h6" component="h2" className={card_classes.title}>
-                        {title}
+                        {title_tag.name}
                     </Typography>
                     <Typography variant="body2" component="p">
                         {render_guess(round.guess, tags)}
