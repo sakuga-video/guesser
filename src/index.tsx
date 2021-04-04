@@ -10,6 +10,7 @@ import { CssBaseline } from '@material-ui/core';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import History from './History';
 import dark_theme from './dark_theme';
+import TagDetailsLoader from './TagDetailsLoader';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -18,8 +19,8 @@ ReactDOM.render(
       <Provider store={store}>
         <Router>
           <Switch>
-            <Route path="/history/:id">
-              <History />
+            <Route path="/tag/:id">
+              <TagDetailsLoader />
             </Route>
             <Route path="/history">
               <History />

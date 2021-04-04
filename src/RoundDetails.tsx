@@ -1,6 +1,7 @@
-import { Box, Card, CardActions, CardContent, CardMedia, Chip, Container, Grid, IconButton, makeStyles, Typography } from "@material-ui/core";
+import { Box, Card, CardActions, CardContent, CardMedia, Chip, Grid, IconButton, makeStyles, Typography } from "@material-ui/core";
 import { Link, SaveAlt } from "@material-ui/icons";
 import { sortBy } from "lodash";
+import React from "react";
 import { Round } from "./GameDatabase";
 import { tag_url } from "./RoundSummary";
 import { Video } from "./VideoWrapper";
@@ -19,6 +20,9 @@ const useStyles = makeStyles(theme => ({
             margin: theme.spacing(0.5),
         },
     },
+    padded_grid: {
+        marginBottom: theme.spacing(1),
+    }
 }));
 
 const RoundDetails = ({ round }: RoundDetailsProps) => {
@@ -64,21 +68,13 @@ const RoundDetails = ({ round }: RoundDetailsProps) => {
     }
 
     return (
-        <Container>
-            <Typography variant="h3" component="h1">
-                {round.tag.name}
-                <IconButton href={tag_url(round.tag)}>
-                    <Link />
-                </IconButton>
-            </Typography>
-
-            <Typography gutterBottom>Popularity: {round.tag.count}</Typography>
+        <React.Fragment>
+            <Typography variant="h5" component="h2" gutterBottom>{new Date(round.date).toDateString()}</Typography>
             <Typography gutterBottom>{get_guess(round.guess)}</Typography>
-            <Typography gutterBottom>{new Date(round.date).toDateString()}</Typography>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} className={classes.padded_grid}>
                 {round.videos.map(video_ui)}
             </Grid>
-        </Container>
+        </React.Fragment>
     )
 };
 
