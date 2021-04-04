@@ -20,6 +20,9 @@ const useStyles = makeStyles(theme => ({
             margin: theme.spacing(0.5),
         },
     },
+    padded_grid: {
+        marginBottom: theme.spacing(1),
+    }
 }));
 
 const RoundDetails = ({ round }: RoundDetailsProps) => {
@@ -68,7 +71,7 @@ const RoundDetails = ({ round }: RoundDetailsProps) => {
         <React.Fragment>
             <Typography variant="h5" component="h2" gutterBottom>{new Date(round.date).toDateString()}</Typography>
             <Typography gutterBottom>{get_guess(round.guess)}</Typography>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} className={classes.padded_grid}>
                 {round.videos.map(video_ui)}
             </Grid>
         </React.Fragment>
