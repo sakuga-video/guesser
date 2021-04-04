@@ -2,12 +2,10 @@ import { Button, Container, makeStyles, Typography } from "@material-ui/core";
 import { Tag, useThunkDispatch } from "./App";
 import { start } from "./appSlice";
 import { choose_random_tags } from './StartButton';
-import { Round } from "./GameDatabase";
 import History from './History';
 import React from "react";
 
 export type GameSummaryProps = {
-    rounds: Round[],
     all_tags: Tag[],
 };
 
@@ -17,7 +15,7 @@ const useContainerStyles = makeStyles({
     }
 });
 
-const GameSummary = ({rounds, all_tags}: GameSummaryProps) => {
+const GameSummary = ({all_tags}: GameSummaryProps) => {
     const dispatch = useThunkDispatch();
     const container_classes = useContainerStyles();
 

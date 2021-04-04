@@ -12,7 +12,6 @@ import GameSummary from './GameSummary';
 import Progress from './Progress';
 import StartButton from './StartButton';
 import Navigation from './Navigation';
-import { Round } from './GameDatabase';
 
 export enum TagType {
   GENERAL = 0,
@@ -38,21 +37,7 @@ function App() {
     playing,
     tags,
   } = useSelector((state: RootState) => state.app);
-  const rounds: Round[] = useSelector((state: RootState) => {
-    const app = state.app;
-    const number_of_rounds = app.tags.length;
-    const rounds = [];
-    for (let i = 0; i < number_of_rounds; i++) {
-      rounds.push({
-        tag: app.tags[i],
-        videos: app.videos[i]?.filter(video => video.played),
-        guess: app.guesses[i]?.guess,
-        date: Date.now(),
-        time_to_guess: 0,
-      });
-    }
-    return rounds;
-  });
+
   const match_result = useSelector((state: RootState) => {
     const guess_to_show = state.app.guess_to_show;
     return guess_to_show === undefined ?
@@ -73,7 +58,7 @@ function App() {
   if (!playing && guesses.length > 0 && guess_to_show === undefined) {
     return (
       <React.Fragment>
-        <GameSummary rounds={rounds} all_tags={all_tags} />
+        <GameSummary all_tags={all_tags} />
         <Navigation />
       </React.Fragment>
     );
