@@ -1,8 +1,6 @@
-import { Box, Card, CardActionArea, CardActions, CardContent, CardMedia, Chip, Container, Grid, GridList, GridListTile, IconButton, makeStyles, Typography } from "@material-ui/core";
+import { Box, Card, CardActions, CardContent, CardMedia, Chip, Container, Grid, IconButton, makeStyles, Typography } from "@material-ui/core";
 import { Link, SaveAlt } from "@material-ui/icons";
-import { round, sortBy } from "lodash";
-import React from "react";
-import { Tag } from "./App";
+import { sortBy } from "lodash";
 import { Round } from "./GameDatabase";
 import { tag_url } from "./RoundSummary";
 import { Video } from "./VideoWrapper";

@@ -3,11 +3,13 @@ import { sortBy } from 'lodash';
 import { Round } from "./GameDatabase";
 import { Tag } from "./App";
 import Matches from "./GuessMatcher";
+import React from "react";
+import { Link } from "react-router-dom";
 
 const TAG_URL = "https://www.sakugabooru.com/post?tags=";
 export const tag_url = (tag: Tag) => TAG_URL + tag.name.split(" ").join("_");
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
     title: {
         textOverflow: "ellipsis",
         overflow: "hidden",
@@ -15,38 +17,44 @@ const useStyles = makeStyles({
     },
     media: {
         height: 240,
+    },
+    root: {
+        textDecoration: "none",
+        color: theme.palette.text.primary,
     }
-});
+}));
 
 export type RoundSummaryProps = {
     round: Round,
 };
 
 const RoundSummary = ({ round }: RoundSummaryProps) => {
-    const card_classes = useStyles();
-
+    const classes = useStyles();
+    
     const last_video = round.videos[round.videos.length - 1];
     const tags = sortBy(last_video.tags, ["count"]);
     const title_tag = tags[tags.length - 1];
 
     return (
         <Card>
-            <CardActionArea href={tag_url(title_tag)} target="_blank">
-                <CardMedia
-                    component="img"
-                    title={"Image thumbnail of a clip from " + round.videos[0].tags[0].name}
-                    alt={"Image thumbnail of a clip from " + round.videos[0].tags[0].name}
-                    image={round.videos[0].preview_url}
-                    className={card_classes.media}
-                />
-                <CardContent>
-                    <Typography gutterBottom variant="h6" component="h2" className={card_classes.title}>
-                        {title_tag.name}
-                    </Typography>
-                    <Typography variant="body2" component="p">
-                        {render_guess(round.guess, tags)}
-                    </Typography>
-                </CardContent>
+            <CardActionArea component="div">
+                <Link to={"/history/"+round.id} className={classes.root}>
+                    <CardMedia
+                        component="img"
+                        title={"Image thumbnail of a clip from " + round.videos[0].tags[0].name}
+                        alt={"Image thumbnail of a clip from " + round.videos[0].tags[0].name}
+                        image={round.videos[0].preview_url}
+                        className={classes.media}
+                    />
+                    <CardContent>
+                        <Typography gutterBottom variant="h6" component="h2" className={classes.title}>
+                            {title_tag.name}
+                        </Typography>
+                        <Typography variant="body2" component="p">
+                            {render_guess(round.guess, tags)}
+                        </Typography>
+                    </CardContent>
+                </Link>
             </CardActionArea>
         </Card>
     );
