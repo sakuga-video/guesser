@@ -7,8 +7,8 @@ class GameDatabase extends Dexie {
 
     constructor(database_name: string) {
         super(database_name);
-        this.version(1).stores({
-            rounds: '++id,date,guess,videos,time_to_guess,tag'
+        this.version(2).stores({
+            rounds: '++id,date,tag.id'
         });
         this.rounds = this.table('rounds');
     }
