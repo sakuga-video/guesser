@@ -28,9 +28,9 @@ const RoundDetails = ({ round }: RoundDetailsProps) => {
     const classes = useStyles();
 
     const video_ui = (video: Video) => {
-        const tags = sortBy(video.tags, tag => tag.count)
-            .filter(tag => tag.id !== round.tag.id);
+        const tags = sortBy(video.tags, tag => tag.count);
         const rarest_tag = tags[0];
+        const tags_minus_main = tags.filter(tag => tag.id !== round.tag.id);
         return (
             <Grid item key={video.id} xs={12} sm={6} md={4}>
                 <Card>
@@ -42,14 +42,16 @@ const RoundDetails = ({ round }: RoundDetailsProps) => {
                         loop
                         poster={video.preview_url}
                     />
-                    <CardContent>
-                        <Typography variant="body1" component="h3">Sources</Typography>
-                        <Box className={classes.tag_wrapper}>
-                            {tags.map(tag =>
-                                <Chip label={tag.name} component="a" href={tag_url(tag)} clickable />
-                            )}
-                        </Box>
-                    </CardContent>
+                    {
+                        tags_minus_main.length > 0 &&
+                        <CardContent>
+                            <Box className={classes.tag_wrapper}>
+                                {tags_minus_main.map(tag =>
+                                    <Chip label={tag.name} component="a" href={tag_url(tag)} clickable />
+                                )}
+                            </Box>
+                        </CardContent>
+                    }
                     <CardActions>
                         <IconButton href={VIDEO_URL + video.id}>
                             <Link />
