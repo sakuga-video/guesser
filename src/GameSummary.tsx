@@ -3,8 +3,8 @@ import { Tag, useThunkDispatch } from "./App";
 import { start } from "./appSlice";
 import { choose_random_tags } from './StartButton';
 import { Round } from "./GameDatabase";
+import History from './History';
 import React from "react";
-import RoundSummaries from "./RoundSummaries";
 
 export type GameSummaryProps = {
     rounds: Round[],
@@ -30,10 +30,10 @@ const GameSummary = ({rounds, all_tags}: GameSummaryProps) => {
                     onClick={() => dispatch(start(choose_random_tags(all_tags)))}
                     color="primary"
                 >
-                        Play Again
+                    Play Again
                 </Button>
             </div>
-            <RoundSummaries rounds={rounds} />
+            <History />
         </Container>
     )
 }
