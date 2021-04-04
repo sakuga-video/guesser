@@ -1,5 +1,6 @@
 import { CircularProgress } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
+import ReactPlayer from "react-player";
 import { Tag, useThunkDispatch } from "./App";
 import { mark_played, set_videos, skip_tag } from "./appSlice";
 import { fetch_random_videos } from "./SakugaAPI";
@@ -47,28 +48,32 @@ const VideoPlayer = ({ tag, videos, video_wrapper, should_play }: Props) => {
     return (
         <React.Fragment>
         {(videos.length === 0 || loading) && should_play && <CircularProgress className="video-loading" />}
-        <video
+        <ReactPlayer
             key={index}
             muted
-            onWaiting={() => set_loading(true)}
-            onPlay={() => {dispatch(mark_played(index)); set_loading(false);}}
-            autoPlay={should_play}
+            onBuffer={() => set_loading(true)}
+            onStart={() => {dispatch(mark_played(index)); set_loading(false);}}
+            onPlay={() => set_loading(false)}
+            playing={should_play}
             loop={videos.length === 1}
             onError={play_next_video}
-            src={videos[index]?.url}
+            url={videos[index]?.url}
+            style={should_play ? {visibility: "visible"} : {}}
             className={should_play ? "active": ""}
             id="main-video"
-            onEnded={() => {set_loading(true); play_next_video()}}
+            controls={false}
+            width="100%"
+            height="auto"
+            onEnded={() => {play_next_video()}}
         />
 
         {
             videos.length > 1 &&
-            <video
+            <ReactPlayer
                 key={increment(index, videos.length)}
                 muted
-                preload="auto"
                 id="preloading-video"
-                src={videos[increment(index, videos.length)]?.url}
+                url={videos[increment(index, videos.length)]?.url}
             />
         }
         </React.Fragment>

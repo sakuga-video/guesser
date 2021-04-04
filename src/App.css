@@ -14,15 +14,15 @@ body, html, #root {
 }
 
 #main-video, #preloading-video {
-  position: fixed;
   visibility: hidden;
-  object-fit: contain;
-  width: 100%;
-  top:0;
+  position: fixed;
 }
 
-#main-video.active {
-  visibility: visible;
+#main-video video, #preloading-video video {
+  height: auto;
+  position: fixed;
+  object-fit: contain;
+  top:0;
 }
 
 #main-video::-webkit-media-controls {
