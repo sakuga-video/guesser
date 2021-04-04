@@ -38,7 +38,7 @@ const RoundSummary = ({ round }: RoundSummaryProps) => {
     return (
         <Card>
             <CardActionArea component="div">
-                <Link to={"/history/"+round.id} className={classes.root}>
+                <Link to={"/tag/"+round.tag.id} className={classes.root}>
                     <CardMedia
                         component="img"
                         title={"Image thumbnail of a clip from " + round.videos[0].tags[0].name}
