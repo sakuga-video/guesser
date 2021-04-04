@@ -18,6 +18,9 @@ ReactDOM.render(
       <Provider store={store}>
         <Router>
           <Switch>
+            <Route path="/history/:id">
+              <History />
+            </Route>
             <Route path="/history">
               <History />
             </Route>
