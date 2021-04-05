@@ -49,7 +49,7 @@ const RoundDetails = ({ round }: RoundDetailsProps) => {
                         <CardContent>
                             <Box className={classes.tag_wrapper}>
                                 {tags_minus_main.map(tag =>
-                                    <Chip label={tag.name} component="a" href={tag_url(tag)} clickable />
+                                    <Chip label={tag.name} key={tag.id} component="a" href={tag_url(tag)} clickable />
                                 )}
                             </Box>
                         </CardContent>

@@ -15,7 +15,7 @@ const TagDetails = ({tag, rounds}: {tag: Tag, rounds: Round[]}) => {
                     <Link />
                 </IconButton>
             </Typography>
-            {rounds.map(round => <RoundDetails round={round} />)}
+            {rounds.map(round => <RoundDetails round={round} key={round.id} />)}
         </Container>
     );
 };
