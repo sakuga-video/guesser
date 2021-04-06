@@ -78,6 +78,7 @@ function App() {
         playing && tags.length > 0 && video_wrapper &&
         <React.Fragment>
           <VideoPlayer
+            round={index}
             tag={tags[index]}
             videos={videos[index] ?? []}
             video_wrapper={video_wrapper}

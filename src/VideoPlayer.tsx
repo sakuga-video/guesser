@@ -8,6 +8,7 @@ import VideoWrapper, { Video } from "./VideoWrapper";
 
 type Props = {
     tag: Tag,
+    round: number,
     videos: Video[],
     video_wrapper: VideoWrapper,
     should_play: boolean,
@@ -15,7 +16,7 @@ type Props = {
 
 const increment = (index: number, max: number) => (index + 1) % max;
 
-const VideoPlayer = ({ tag, videos, video_wrapper, should_play }: Props) => {
+const VideoPlayer = ({ tag, round, videos, video_wrapper, should_play }: Props) => {
     const dispatch = useThunkDispatch();
     const [loading, set_loading] = useState(true);
     const [index, set_index] = useState(0);
@@ -36,7 +37,7 @@ const VideoPlayer = ({ tag, videos, video_wrapper, should_play }: Props) => {
                 }
             })
         return () => { mounted = false }; 
-    }, [tag, video_wrapper, dispatch]);
+    }, [tag, round, video_wrapper, dispatch]);
 
     const play_next_video = () => {
         if (videos.length > 1) {
